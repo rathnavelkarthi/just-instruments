@@ -1,6 +1,6 @@
 [build]
-  # Build command (not needed for static files)
-  command = "echo 'Static site - no build required'"
+  # Build command for static site with serverless functions
+  command = "echo 'Building static site with serverless functions'"
   
   # Directory to publish
   publish = "."

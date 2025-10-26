@@ -3,154 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JUST INSTRUMENTS - Calibration Platform</title>
+    <title>JUST INSTRUMENTS - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 50%, #1e3a8a 100%);
         }
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
+        .input-focus {
+            transition: all 0.3s ease;
         }
-        .logo {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #1e3a8a;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            color: #6b7280;
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-        }
-        .button {
-            display: inline-block;
-            background: linear-gradient(135deg, #3b82f6, #06b6d4);
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
-            margin: 10px;
-            transition: transform 0.2s;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-        }
-        .button:hover {
+        .input-focus:focus {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-        }
-        .credentials {
-            background: #f8fafc;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-        }
-        .credentials h3 {
-            margin-top: 0;
-            color: #1e3a8a;
-        }
-        .credential-item {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-            padding: 8px 0;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        .credential-item:last-child {
-            border-bottom: none;
-        }
-        .status {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        .status.online {
-            background: #dcfce7;
-            color: #166534;
-        }
-        .instructions {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-        }
-        .instructions h3 {
-            margin-top: 0;
-            color: #92400e;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="logo">JUST INSTRUMENTS</div>
-        <div class="subtitle">Calibration Certificate Management Platform</div>
-        
-        <div class="status online">🟢 System Online</div>
-        
-        <div class="instructions">
-            <h3>🚀 Quick Start Instructions</h3>
-            <p><strong>Option 1:</strong> Click "Login Portal" below to access the platform</p>
-            <p><strong>Option 2:</strong> Open <code>login.html</code> directly in your browser</p>
-            <p><strong>Option 3:</strong> Run <code>start_local.bat</code> for automatic setup</p>
-        </div>
-        
-        <a href="login.html" class="button">🔐 Login Portal</a>
-        <a href="modern-dashboard.html" class="button">📊 Staff Dashboard</a>
-        <a href="customer-dashboard.html" class="button">👤 Customer Portal</a>
-        
-        <div class="credentials">
-            <h3>🔐 Login Credentials</h3>
-            <div class="credential-item">
-                <span><strong>Admin Login:</strong></span>
-                <span>admin@justinstruments.com / admin123</span>
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <!-- Login Form -->
+        <div class="bg-white rounded-2xl p-8 shadow-2xl relative max-w-md w-full">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">JUST INSTRUMENTS</h1>
+                <p class="text-gray-600 text-sm">Calibration Certificate Management</p>
             </div>
-            <div class="credential-item">
-                <span><strong>Staff Login:</strong></span>
-                <span>staff001 / staff123</span>
-            </div>
-            <div class="credential-item">
-                <span><strong>Customer Login:</strong></span>
-                <span>CUST-001 / OTP: 123456</span>
-            </div>
+
+            <form id="loginForm" class="space-y-6">
+                <!-- Email Field -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Enter your email</label>
+                    <div class="relative">
+                        <input type="email" id="username" placeholder="Enter your email" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus">
+                        <i data-lucide="mail" class="w-5 h-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2"></i>
+                    </div>
+                </div>
+                
+                <!-- Password Field -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Enter your password</label>
+                    <div class="relative">
+                        <input type="password" id="password" placeholder="Enter your password" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus pr-12">
+                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i data-lucide="eye" class="w-5 h-5" id="passwordToggle"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                    </label>
+                    <a href="#" class="text-sm text-blue-600 hover:text-blue-800">Forgot Password?</a>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" id="loginButton"
+                        class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200">
+                    Login
+                </button>
+            </form>
         </div>
-        
-        <div class="instructions">
-            <h3>📋 Features Available</h3>
-            <ul style="text-align: left; margin: 0;">
-                <li>✅ Complete Admin Dashboard</li>
-                <li>✅ Staff Dashboard</li>
-                <li>✅ Customer Portal with OTP Login</li>
-                <li>✅ Customer Certificate Management</li>
-                <li>✅ Customer Profile Management</li>
-                <li>✅ Customer Notification Preferences</li>
-                <li>✅ PDF Certificate Downloads</li>
-                <li>✅ WhatsApp & Email Integration</li>
-                <li>✅ Export & Share Options</li>
-            </ul>
-        </div>
-        
-        <div style="margin-top: 30px; color: #6b7280; font-size: 0.9rem;">
-            <p>💡 <strong>Note:</strong> For full API functionality, install Node.js and run <code>npm install && npm start</code></p>
-            <p>🌐 <strong>Local Server:</strong> Run <code>python start_simple.py</code> for HTTP server</p>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center">
+            <p class="text-xs text-white/60">
+                © 2025 JUST INSTRUMENTS. All rights reserved.
+            </p>
         </div>
     </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggleIcon = document.getElementById('passwordToggle');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            const button = document.getElementById('loginButton');
+            const originalText = button.innerHTML;
+            
+            // Show loading state
+            button.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 inline mr-2 animate-spin"></i>Authenticating...';
+            button.disabled = true;
+            
+            try {
+                const response = await fetch('/.netlify/functions/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success animation
+                    button.innerHTML = '<i data-lucide="check" class="w-5 h-5 inline mr-2"></i>Success!';
+                    button.classList.add('bg-green-600', 'hover:bg-green-700');
+                    button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                    
+                    // Store user session
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    localStorage.setItem('userType', result.user.userType);
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 1500);
+                } else {
+                    throw new Error(result.error || 'Authentication failed');
+                }
+            } catch (error) {
+                console.error('Authentication error:', error);
+                
+                // Show error animation
+                button.innerHTML = '<i data-lucide="x" class="w-5 h-5 inline mr-2"></i>Invalid Credentials';
+                button.classList.add('bg-red-600', 'hover:bg-red-700');
+                button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    button.disabled = false;
+                }, 2000);
+            }
+        });
+
+        // Add floating animation to inputs on focus
+        document.querySelectorAll('.input-focus').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
 </body>
 </html>
