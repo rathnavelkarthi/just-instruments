@@ -13,31 +13,6 @@
   NODE_VERSION = "18"
 
 # Redirect rules
-[[redirects]]
-  # Redirect old login pages to new unified login
-  from = "/modern-login.html"
-  to = "/login.html"
-  status = 301
-
-[[redirects]]
-  from = "/unified-login.html"
-  to = "/login.html"
-  status = 301
-
-[[redirects]]
-  from = "/customer-login.html"
-  to = "/login.html"
-  status = 301
-
-[[redirects]]
-  from = "/admin-dashboard.html"
-  to = "/modern-dashboard.html"
-  status = 301
-
-[[redirects]]
-  from = "/staff-dashboard.html"
-  to = "/modern-dashboard.html"
-  status = 301
 
 [[redirects]]
   # API routes to Netlify functions
