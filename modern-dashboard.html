@@ -1927,7 +1927,7 @@
 
         function deleteCustomer(customer) {
             if (confirm(`Are you sure you want to delete ${customer}?`)) {
-                alert(`${customer} deleted successfully`);
+                // Customer deleted successfully
             }
         }
 
@@ -1960,7 +1960,7 @@
 
         function deleteInstrument(instrument) {
             if (confirm(`Are you sure you want to delete ${instrument}?`)) {
-                alert(`${instrument} deleted successfully`);
+                // Instrument deleted successfully
             }
         }
 
@@ -1993,7 +1993,7 @@
 
         function reissueCertificate(certificate) {
             if (confirm(`Are you sure you want to reissue ${certificate}?`)) {
-                alert(`Certificate ${certificate} reissued successfully\n\n• New certificate number generated\n• Updated calibration date\n• New QR code\n• Notification sent to customer`);
+                // Certificate reissued successfully
             }
         }
 
@@ -2071,37 +2071,37 @@
         // Form submission handlers
         document.getElementById('addCustomerForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Customer Added Successfully!\n\n• Customer information saved\n• Address details recorded\n• Contact information updated\n• Added to customer database');
+            // Customer added successfully - form will be submitted silently
             closeModal('addCustomerModal');
         });
 
         document.getElementById('editCustomerForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Customer Updated Successfully!\n\n• Customer information updated\n• Contact details modified\n• Address information changed\n• Database updated');
+            // Customer updated successfully - form will be submitted silently
             closeModal('editCustomerModal');
         });
 
         document.getElementById('addInstrumentForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Instrument Added Successfully!\n\n• Instrument details saved\n• Customer assignment completed\n• Specifications recorded\n• Added to instrument database');
+            // Instrument added successfully - form will be submitted silently
             closeModal('addInstrumentModal');
         });
 
         document.getElementById('editInstrumentForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Instrument Updated Successfully!\n\n• Instrument details modified\n• Specifications updated\n• Customer assignment changed\n• Database updated');
+            // Instrument updated successfully - form will be submitted silently
             closeModal('editInstrumentModal');
         });
 
         document.getElementById('createCertificateForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Certificate Created Successfully!\n\n• Certificate number: JIC-20241201-XXX\n• PDF generated with QR code\n• Email sent to customer\n• WhatsApp notification sent\n• Added to certificate database');
+            // Certificate created successfully - form will be submitted silently
             closeModal('createCertificateModal');
         });
 
         document.getElementById('editCertificateForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Certificate Updated Successfully!\n\n• Certificate details modified\n• Status updated\n• Database updated\n• Changes saved');
+            // Certificate updated successfully - form will be submitted silently
             closeModal('editCertificateModal');
         });
 
@@ -2134,7 +2134,7 @@
 
         function deleteTestEquipment(equipment) {
             if (confirm(`Are you sure you want to delete ${equipment}?`)) {
-                alert(`${equipment} deleted successfully`);
+                // Test equipment deleted successfully
             }
         }
 
@@ -2450,37 +2450,37 @@
         // Additional form submission handlers
         document.getElementById('addTestEquipmentForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Test Equipment Added Successfully!\n\n• Equipment details saved\n• Calibration information recorded\n• Accuracy specifications updated\n• Added to equipment database');
+            // Test equipment added successfully - form will be submitted silently
             closeModal('addTestEquipmentModal');
         });
 
         document.getElementById('editTestEquipmentForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Test Equipment Updated Successfully!\n\n• Equipment details modified\n• Calibration information updated\n• Specifications changed\n• Database updated');
+            // Test equipment updated successfully - form will be submitted silently
             closeModal('editTestEquipmentModal');
         });
 
         document.getElementById('addStaffForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Staff Member Added Successfully!\n\n• Staff information saved\n• Designation recorded\n• Added to staff database\n• Ready for signature upload');
+            // Staff member added successfully - form will be submitted silently
             closeModal('addStaffModal');
         });
 
         document.getElementById('editStaffForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Staff Member Updated Successfully!\n\n• Staff information modified\n• Designation updated\n• Database updated\n• Changes saved');
+            // Staff member updated successfully - form will be submitted silently
             closeModal('editStaffModal');
         });
 
         document.getElementById('uploadSignatureForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Signature Uploaded Successfully!\n\n• Digital signature uploaded\n• Signature verified\n• Staff profile updated\n• Available for certificate generation');
+            // Signature uploaded successfully - form will be submitted silently
             closeModal('uploadSignatureModal');
         });
 
         document.getElementById('sendNotificationForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Notification Sent Successfully!\n\n• Multi-channel delivery initiated\n• Email notification sent\n• SMS alert delivered\n• WhatsApp message sent\n• Push notification triggered');
+            // Notification sent successfully - form will be submitted silently
             closeModal('sendNotificationModal');
         });
 
