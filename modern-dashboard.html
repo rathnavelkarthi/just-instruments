@@ -1906,6 +1906,22 @@
         }
 
         function editCustomer(customer) {
+            // Populate form with existing data
+            const form = document.getElementById('editCustomerForm');
+            if (form) {
+                // Set form values based on customer data
+                const companyNameInput = form.querySelector('input[name="company_name"]');
+                const contactPersonInput = form.querySelector('input[name="contact_person"]');
+                const emailInput = form.querySelector('input[name="email"]');
+                const phoneInput = form.querySelector('input[name="phone"]');
+                const addressInput = form.querySelector('textarea[name="address"]');
+                
+                if (companyNameInput) companyNameInput.value = customer || 'ABC Industries';
+                if (contactPersonInput) contactPersonInput.value = 'John Doe';
+                if (emailInput) emailInput.value = 'john@abccorp.com';
+                if (phoneInput) phoneInput.value = '+1 555-0123';
+                if (addressInput) addressInput.value = '123 Business St, City, State 12345';
+            }
             showModal('editCustomerModal');
         }
 
@@ -1925,6 +1941,20 @@
         }
 
         function editInstrument(instrument) {
+            // Populate form with existing data
+            const form = document.getElementById('editInstrumentForm');
+            if (form) {
+                // Set form values based on instrument data
+                const instrumentNameInput = form.querySelector('input[name="instrument_name"]');
+                const modelInput = form.querySelector('input[name="model"]');
+                const serialNumberInput = form.querySelector('input[name="serial_number"]');
+                const customerSelect = form.querySelector('select[name="customer_id"]');
+                
+                if (instrumentNameInput) instrumentNameInput.value = instrument || 'Digital Multimeter';
+                if (modelInput) modelInput.value = 'DM-5000';
+                if (serialNumberInput) serialNumberInput.value = 'DM-2024-001';
+                if (customerSelect) customerSelect.value = 'ABC Industries';
+            }
             showModal('editInstrumentModal');
         }
 
@@ -1944,6 +1974,20 @@
         }
 
         function editCertificate(certificate) {
+            // Populate form with existing data
+            const form = document.getElementById('editCertificateForm');
+            if (form) {
+                // Set form values based on certificate data
+                const certificateNumberInput = form.querySelector('input[name="certificate_number"]');
+                const calibrationDateInput = form.querySelector('input[name="calibration_date"]');
+                const expiryDateInput = form.querySelector('input[name="expiry_date"]');
+                const statusSelect = form.querySelector('select[name="status"]');
+                
+                if (certificateNumberInput) certificateNumberInput.value = certificate || 'JIC-20241201-001';
+                if (calibrationDateInput) calibrationDateInput.value = '2024-12-01';
+                if (expiryDateInput) expiryDateInput.value = '2025-12-01';
+                if (statusSelect) statusSelect.value = 'valid';
+            }
             showModal('editCertificateModal');
         }
 
@@ -1962,6 +2006,12 @@
         function closeModal(modalId) {
             document.getElementById(modalId).classList.add('hidden');
             document.getElementById(modalId).classList.remove('flex');
+            
+            // Clear forms when closing modals
+            const form = document.querySelector(`#${modalId} form`);
+            if (form) {
+                form.reset();
+            }
         }
 
         // Initialize charts
@@ -2065,6 +2115,20 @@
         }
 
         function editTestEquipment(equipment) {
+            // Populate form with existing data
+            const form = document.getElementById('editTestEquipmentForm');
+            if (form) {
+                // Set form values based on equipment data
+                const equipmentNameInput = form.querySelector('input[name="equipment_name"]');
+                const modelInput = form.querySelector('input[name="model"]');
+                const serialNumberInput = form.querySelector('input[name="serial_number"]');
+                const lastCalibrationInput = form.querySelector('input[name="last_calibration"]');
+                
+                if (equipmentNameInput) equipmentNameInput.value = equipment || 'Fluke 87V Multimeter';
+                if (modelInput) modelInput.value = '87V';
+                if (serialNumberInput) serialNumberInput.value = 'FL-2024-001';
+                if (lastCalibrationInput) lastCalibrationInput.value = '2024-11-01';
+            }
             showModal('editTestEquipmentModal');
         }
 
@@ -2084,6 +2148,20 @@
         }
 
         function editStaff(staff) {
+            // Populate form with existing data
+            const form = document.getElementById('editStaffForm');
+            if (form) {
+                // Set form values based on staff data
+                const staffNameInput = form.querySelector('input[name="staff_name"]');
+                const designationInput = form.querySelector('input[name="designation"]');
+                const emailInput = form.querySelector('input[name="email"]');
+                const phoneInput = form.querySelector('input[name="phone"]');
+                
+                if (staffNameInput) staffNameInput.value = staff || 'John Smith';
+                if (designationInput) designationInput.value = 'Senior Calibration Technician';
+                if (emailInput) emailInput.value = 'john.smith@justinstruments.com';
+                if (phoneInput) phoneInput.value = '+1 555-0100';
+            }
             showModal('editStaffModal');
         }
 
