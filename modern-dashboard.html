@@ -2138,8 +2138,100 @@
             }
         }
 
-        // Initialize charts
+        // Refresh data from Supabase
+        function refreshData() {
+            console.log('Refreshing data from Supabase...');
+            loadCustomersFromSupabase();
+            loadInstrumentsFromSupabase();
+        }
+
+        // Load data from Supabase on page load
+        async function loadCustomersFromSupabase() {
+            try {
+                const response = await fetch('/.netlify/functions/customers', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        method: 'GET'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    console.log('Loaded customers from Supabase:', result.data);
+                    
+                    // Clear existing customers and load from Supabase
+                    const customersList = document.querySelector('#customersList .grid');
+                    if (customersList) {
+                        // Keep the first few demo customers, add Supabase data
+                        const existingCards = customersList.querySelectorAll('.bg-white.rounded-lg');
+                        if (existingCards.length > 3) {
+                            // Remove demo customers if we have real data
+                            for (let i = 3; i < existingCards.length; i++) {
+                                existingCards[i].remove();
+                            }
+                        }
+                        
+                        // Add Supabase customers
+                        result.data.forEach(customer => {
+                            addCustomerToList(customer);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading customers from Supabase:', error);
+            }
+        }
+
+        // Load instruments from Supabase
+        async function loadInstrumentsFromSupabase() {
+            try {
+                const response = await fetch('/.netlify/functions/instruments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        method: 'GET'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    console.log('Loaded instruments from Supabase:', result.data);
+                    
+                    // Clear existing instruments and load from Supabase
+                    const instrumentsList = document.querySelector('#instrumentsList .grid');
+                    if (instrumentsList) {
+                        // Keep the first few demo instruments, add Supabase data
+                        const existingCards = instrumentsList.querySelectorAll('.bg-white.rounded-lg');
+                        if (existingCards.length > 3) {
+                            // Remove demo instruments if we have real data
+                            for (let i = 3; i < existingCards.length; i++) {
+                                existingCards[i].remove();
+                            }
+                        }
+                        
+                        // Add Supabase instruments
+                        result.data.forEach(instrument => {
+                            addInstrumentToList(instrument);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading instruments from Supabase:', error);
+            }
+        }
+
+        // Initialize charts and load data
         document.addEventListener('DOMContentLoaded', function() {
+            // Load data from Supabase
+            loadCustomersFromSupabase();
+            loadInstrumentsFromSupabase();
             // Calibration Trends Chart
             const ctx = document.getElementById('calibrationChart').getContext('2d');
             new Chart(ctx, {
@@ -2218,8 +2310,35 @@
             
             console.log('Customer data:', customerData); // Debug log
             
-            // Add customer to the dashboard (local for now)
-            addCustomerToList(customerData);
+            try {
+                // Send data to Supabase via Netlify function
+                const response = await fetch('/.netlify/functions/customers', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        method: 'POST',
+                        data: customerData
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    console.log('Customer saved to Supabase:', result.data);
+                    // Add customer to the dashboard with Supabase data
+                    addCustomerToList(result.data);
+                } else {
+                    console.error('Failed to save customer to Supabase:', result.error);
+                    // Fallback: add locally
+                    addCustomerToList(customerData);
+                }
+            } catch (error) {
+                console.error('Error saving customer to Supabase:', error);
+                // Fallback: add locally
+                addCustomerToList(customerData);
+            }
             
             // Reset form and close modal
             e.target.reset();
@@ -2271,8 +2390,35 @@
             
             console.log('Instrument data:', instrumentData); // Debug log
             
-            // Add instrument to the dashboard
-            addInstrumentToList(instrumentData);
+            try {
+                // Send data to Supabase via Netlify function
+                const response = await fetch('/.netlify/functions/instruments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        method: 'POST',
+                        data: instrumentData
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    console.log('Instrument saved to Supabase:', result.data);
+                    // Add instrument to the dashboard with Supabase data
+                    addInstrumentToList(result.data);
+                } else {
+                    console.error('Failed to save instrument to Supabase:', result.error);
+                    // Fallback: add locally
+                    addInstrumentToList(instrumentData);
+                }
+            } catch (error) {
+                console.error('Error saving instrument to Supabase:', error);
+                // Fallback: add locally
+                addInstrumentToList(instrumentData);
+            }
             
             // Reset form and close modal
             e.target.reset();

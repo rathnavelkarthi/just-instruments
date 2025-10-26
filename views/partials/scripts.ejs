@@ -1,0 +1,242 @@
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Sidebar functionality
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+    }
+
+    // Close sidebar when clicking overlay
+    document.getElementById('sidebarOverlay').addEventListener('click', function() {
+        toggleSidebar();
+    });
+
+    // Section navigation
+    function showSection(sectionId) {
+        // Hide all sections
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.add('hidden');
+        });
+        
+        // Show selected section
+        document.getElementById(sectionId + 'Section').classList.remove('hidden');
+        
+        // Update sidebar active state
+        document.querySelectorAll('nav a').forEach(link => {
+            link.classList.remove('bg-blue-50', 'text-gray-700');
+            link.classList.add('text-gray-600');
+        });
+        
+        const activeLink = document.querySelector(`a[href="#${sectionId}"]`);
+        if (activeLink) {
+            activeLink.classList.add('bg-blue-50', 'text-gray-700');
+            activeLink.classList.remove('text-gray-600');
+        }
+    }
+
+    // Modal functions
+    function showModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+        document.getElementById(modalId).classList.add('flex');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+        document.getElementById(modalId).classList.remove('flex');
+        
+        // Reset form
+        const form = document.querySelector(`#${modalId} form`);
+        if (form) {
+            form.reset();
+        }
+    }
+
+    // Refresh data from Supabase
+    function refreshData() {
+        console.log('Refreshing data from Supabase...');
+        location.reload();
+    }
+
+    // Form submission handlers
+    document.getElementById('addCustomerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        console.log('Customer form submitted!');
+        
+        // Get form data
+        const formData = new FormData(e.target);
+        const customerData = {
+            company_name: formData.get('company_name'),
+            contact_person: formData.get('contact_person'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            address: formData.get('address')
+        };
+        
+        console.log('Customer data:', customerData);
+        
+        try {
+            const response = await fetch('/api/customers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    method: 'POST',
+                    data: customerData
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                console.log('Customer saved to Supabase:', result.data);
+                // Refresh the page to show new data
+                location.reload();
+            } else {
+                console.error('Failed to save customer:', result.error);
+                alert('Failed to save customer: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Error saving customer:', error);
+            alert('Error saving customer: ' + error.message);
+        }
+    });
+
+    document.getElementById('addInstrumentForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        console.log('Instrument form submitted!');
+        
+        // Get form data
+        const formData = new FormData(e.target);
+        const instrumentData = {
+            instrument_name: formData.get('instrument_name'),
+            model: formData.get('model'),
+            serial_number: formData.get('serial_number'),
+            manufacturer: formData.get('manufacturer'),
+            customer_id: formData.get('customer_id'),
+            specifications: formData.get('specifications')
+        };
+        
+        console.log('Instrument data:', instrumentData);
+        
+        try {
+            const response = await fetch('/api/instruments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    method: 'POST',
+                    data: instrumentData
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                console.log('Instrument saved to Supabase:', result.data);
+                // Refresh the page to show new data
+                location.reload();
+            } else {
+                console.error('Failed to save instrument:', result.error);
+                alert('Failed to save instrument: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Error saving instrument:', error);
+            alert('Error saving instrument: ' + error.message);
+        }
+    });
+
+    // Initialize charts
+    document.addEventListener('DOMContentLoaded', function() {
+        // Calibration Trends Chart
+        const ctx = document.getElementById('calibrationChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Calibrations',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderColor: 'rgb(59, 130, 246)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Certificate Status Chart
+        const ctx2 = document.getElementById('certificateChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Valid', 'Expired', 'Pending'],
+                datasets: [{
+                    data: [45, 12, 8],
+                    backgroundColor: [
+                        'rgb(34, 197, 94)',
+                        'rgb(239, 68, 68)',
+                        'rgb(245, 158, 11)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+
+    // Placeholder functions for actions
+    function showCustomerDetails(customerName) {
+        alert('Customer details for: ' + customerName);
+    }
+
+    function editCustomer(customerName) {
+        alert('Edit customer: ' + customerName);
+    }
+
+    function deleteCustomer(customerName) {
+        if (confirm('Are you sure you want to delete ' + customerName + '?')) {
+            alert('Customer deleted: ' + customerName);
+        }
+    }
+
+    function showInstrumentDetails(instrumentName) {
+        alert('Instrument details for: ' + instrumentName);
+    }
+
+    function editInstrument(instrumentName) {
+        alert('Edit instrument: ' + instrumentName);
+    }
+
+    function deleteInstrument(instrumentName) {
+        if (confirm('Are you sure you want to delete ' + instrumentName + '?')) {
+            alert('Instrument deleted: ' + instrumentName);
+        }
+    }
+</script>
