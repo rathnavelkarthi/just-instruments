@@ -16,7 +16,7 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 50%, #1e3a8a 100%);
         }
         .input-focus {
             transition: all 0.3s ease;
@@ -45,114 +45,64 @@
 </head>
 <body class="gradient-bg min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <div class="glass-effect rounded-2xl p-6 mb-6">
-                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="shield-check" class="w-8 h-8 text-white"></i>
-                </div>
-                <h1 class="text-2xl font-bold text-white mb-2">JUST INSTRUMENTS</h1>
-                <p class="text-white/80 text-sm">Calibration Certificate Management</p>
-                <div id="connectionStatus" class="mt-2 text-xs text-white/60"></div>
-            </div>
-        </div>
 
         <!-- Login Form -->
-        <div class="glass-effect rounded-2xl p-8 shadow-2xl relative">
-            <!-- User Type Indicator -->
-            <div id="userTypeIndicator" class="user-type-indicator hidden">
-                <span id="userTypeText"></span>
+        <div class="bg-white rounded-2xl p-8 shadow-2xl relative max-w-md w-full">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">JUST INSTRUMENTS</h1>
+                <p class="text-gray-600 text-sm">Calibration Certificate Management</p>
             </div>
 
             <form id="loginForm" class="space-y-6">
-                <!-- Username/Email Field -->
+                <!-- Email Field -->
                 <div>
-                    <label class="block text-sm font-medium text-white mb-2">
-                        <i data-lucide="user" class="w-4 h-4 inline mr-2"></i>
-                        Username / Email / Customer ID
-                    </label>
-                    <input type="text" id="username" placeholder="Enter your credentials" 
-                           class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:ring-2 focus:ring-white/50 focus:border-transparent input-focus">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Enter your email</label>
+                    <div class="relative">
+                        <input type="email" id="username" placeholder="Enter your email" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus">
+                        <i data-lucide="mail" class="w-5 h-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2"></i>
+                    </div>
                 </div>
                 
                 <!-- Password Field -->
                 <div>
-                    <label class="block text-sm font-medium text-white mb-2">
-                        <i data-lucide="lock" class="w-4 h-4 inline mr-2"></i>
-                        Password / OTP
-                    </label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Enter your password</label>
                     <div class="relative">
-                        <input type="password" id="password" placeholder="Enter your password or OTP" 
-                               class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:ring-2 focus:ring-white/50 focus:border-transparent input-focus pr-12">
-                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white">
+                        <input type="password" id="password" placeholder="Enter your password" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent input-focus pr-12">
+                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <i data-lucide="eye" class="w-5 h-5" id="passwordToggle"></i>
                         </button>
                     </div>
                 </div>
 
+                <!-- Remember Me & Forgot Password -->
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                    </label>
+                    <a href="#" class="text-sm text-blue-600 hover:text-blue-800">Forgot Password?</a>
+                </div>
+
                 <!-- Login Button -->
                 <button type="submit" id="loginButton"
-                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
-                    <i data-lucide="log-in" class="w-5 h-5 inline mr-2"></i>
+                        class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200">
                     Login
                 </button>
             </form>
 
-            <!-- Demo Credentials -->
-            <div class="mt-6 p-4 bg-white/10 rounded-lg">
-                <h3 class="text-sm font-semibold text-white mb-3">Demo Credentials:</h3>
-                <div class="space-y-3 text-xs text-white/80">
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
-                        <div>
-                            <span class="font-semibold">Admin:</span>
-                            <span class="ml-2">admin@justinstruments.com / admin123</span>
-                        </div>
-                        <span class="user-type-indicator admin-indicator">A</span>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
-                        <div>
-                            <span class="font-semibold">Staff:</span>
-                            <span class="ml-2">staff001 / staff123</span>
-                        </div>
-                        <span class="user-type-indicator staff-indicator">S</span>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
-                        <div>
-                            <span class="font-semibold">Customer:</span>
-                            <span class="ml-2">CUST-001 / 123456</span>
-                        </div>
-                        <span class="user-type-indicator customer-indicator">C</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Login Buttons -->
-            <div class="mt-6 grid grid-cols-3 gap-2">
-                <button onclick="quickLogin('admin@justinstruments.com', 'admin123')" 
-                        class="bg-blue-500/20 text-white py-2 px-3 rounded-lg text-xs hover:bg-blue-500/30 transition-all duration-200">
-                    <i data-lucide="shield" class="w-4 h-4 inline mr-1"></i>
-                    Admin
-                </button>
-                <button onclick="quickLogin('staff001', 'staff123')" 
-                        class="bg-green-500/20 text-white py-2 px-3 rounded-lg text-xs hover:bg-green-500/30 transition-all duration-200">
-                    <i data-lucide="users" class="w-4 h-4 inline mr-1"></i>
-                    Staff
-                </button>
-                <button onclick="quickLogin('CUST-001', '123456')" 
-                        class="bg-purple-500/20 text-white py-2 px-3 rounded-lg text-xs hover:bg-purple-500/30 transition-all duration-200">
-                    <i data-lucide="user" class="w-4 h-4 inline mr-1"></i>
-                    Customer
-                </button>
-            </div>
         </div>
 
         <!-- Footer -->
         <div class="mt-8 text-center">
-            <div class="glass-effect rounded-lg p-4">
-                <p class="text-xs text-white/60">
-                    © 2025 JUST INSTRUMENTS. Single Login Portal. Secure Authentication.
-                </p>
-            </div>
+            <p class="text-xs text-white/60">
+                © 2025 JUST INSTRUMENTS. All rights reserved.
+            </p>
         </div>
     </div>
 
@@ -197,12 +147,6 @@
             }
         }
 
-        // Quick login function
-        function quickLogin(username, password) {
-            document.getElementById('username').value = username;
-            document.getElementById('password').value = password;
-            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
-        }
 
         // Toggle password visibility
         function togglePassword() {
@@ -219,43 +163,6 @@
             lucide.createIcons();
         }
 
-        // Detect user type based on credentials
-        function detectUserType(username, password) {
-            if (username.includes('@') && username.includes('admin')) {
-                return 'admin';
-            }
-            if (username.startsWith('staff') || username === 'staff001') {
-                return 'staff';
-            }
-            if (username.startsWith('CUST-') || username === 'CUST-001') {
-                return 'customer';
-            }
-            return null;
-        }
-
-        // Show user type indicator
-        function showUserTypeIndicator(userType) {
-            const indicator = document.getElementById('userTypeIndicator');
-            const text = document.getElementById('userTypeText');
-            
-            indicator.classList.remove('hidden');
-            indicator.classList.remove('admin-indicator', 'staff-indicator', 'customer-indicator');
-            
-            switch(userType) {
-                case 'admin':
-                    indicator.classList.add('admin-indicator');
-                    text.textContent = 'A';
-                    break;
-                case 'staff':
-                    indicator.classList.add('staff-indicator');
-                    text.textContent = 'S';
-                    break;
-                case 'customer':
-                    indicator.classList.add('customer-indicator');
-                    text.textContent = 'C';
-                    break;
-            }
-        }
 
         // Local authentication fallback
         function localAuthentication(username, password) {
@@ -286,11 +193,6 @@
             
             console.log('Login attempt - Username:', username, 'Password:', password);
             
-            // Detect user type
-            const userType = detectUserType(username, password);
-            if (userType) {
-                showUserTypeIndicator(userType);
-            }
             
             const button = document.getElementById('loginButton');
             const originalText = button.innerHTML;
@@ -370,17 +272,6 @@
             }
         });
 
-        // Real-time user type detection
-        document.getElementById('username').addEventListener('input', function(e) {
-            const username = e.target.value.trim();
-            const userType = detectUserType(username, '');
-            
-            if (userType) {
-                showUserTypeIndicator(userType);
-            } else {
-                document.getElementById('userTypeIndicator').classList.add('hidden');
-            }
-        });
 
         // Add floating animation to inputs on focus
         document.querySelectorAll('.input-focus').forEach(input => {
