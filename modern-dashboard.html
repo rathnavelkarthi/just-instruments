@@ -1997,6 +1997,104 @@
             }
         }
 
+        // Add instrument to dashboard list
+        function addInstrumentToList(instrumentData) {
+            const instrumentsList = document.querySelector('#instrumentsList .grid');
+            if (!instrumentsList) return;
+            
+            // Create new instrument card
+            const instrumentCard = document.createElement('div');
+            instrumentCard.className = 'bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow';
+            instrumentCard.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i data-lucide="cpu" class="w-5 h-5 text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">${instrumentData.instrumentName}</h3>
+                            <p class="text-sm text-gray-500">${instrumentData.model}</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Active</span>
+                </div>
+                <div class="space-y-2 text-sm text-gray-600">
+                    <p class="flex items-center">
+                        <i data-lucide="hash" class="w-4 h-4 mr-2"></i>
+                        ${instrumentData.serialNumber}
+                    </p>
+                    <p class="flex items-center">
+                        <i data-lucide="building" class="w-4 h-4 mr-2"></i>
+                        ${instrumentData.customer}
+                    </p>
+                    <p class="flex items-center">
+                        <i data-lucide="settings" class="w-4 h-4 mr-2"></i>
+                        ${instrumentData.specifications || 'Standard specifications'}
+                    </p>
+                </div>
+                <div class="mt-4 flex space-x-2">
+                    <button onclick="showInstrumentDetails('${instrumentData.instrumentName}')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                    <button onclick="editInstrument('${instrumentData.instrumentName}')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                    <button onclick="deleteInstrument('${instrumentData.instrumentName}')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                </div>
+            `;
+            
+            // Add to the beginning of the list
+            instrumentsList.insertBefore(instrumentCard, instrumentsList.firstChild);
+            
+            // Reinitialize Lucide icons for the new element
+            lucide.createIcons();
+        }
+
+        // Add customer to dashboard list
+        function addCustomerToList(customerData) {
+            const customersList = document.querySelector('#customersList .grid');
+            if (!customersList) return;
+            
+            // Create new customer card
+            const customerCard = document.createElement('div');
+            customerCard.className = 'bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow';
+            customerCard.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i data-lucide="building" class="w-5 h-5 text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">${customerData.companyName}</h3>
+                            <p class="text-sm text-gray-500">${customerData.contactPerson}</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                </div>
+                <div class="space-y-2 text-sm text-gray-600">
+                    <p class="flex items-center">
+                        <i data-lucide="mail" class="w-4 h-4 mr-2"></i>
+                        ${customerData.email}
+                    </p>
+                    <p class="flex items-center">
+                        <i data-lucide="phone" class="w-4 h-4 mr-2"></i>
+                        ${customerData.phone}
+                    </p>
+                    <p class="flex items-center">
+                        <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>
+                        ${customerData.address}
+                    </p>
+                </div>
+                <div class="mt-4 flex space-x-2">
+                    <button onclick="showCustomerDetails('${customerData.companyName}')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                    <button onclick="editCustomer('${customerData.companyName}')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                    <button onclick="deleteCustomer('${customerData.companyName}')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                </div>
+            `;
+            
+            // Add to the beginning of the list
+            customersList.insertBefore(customerCard, customersList.firstChild);
+            
+            // Reinitialize Lucide icons for the new element
+            lucide.createIcons();
+        }
+
         // Modal functions
         function showModal(modalId) {
             document.getElementById(modalId).classList.remove('hidden');
@@ -2071,25 +2169,79 @@
         // Form submission handlers
         document.getElementById('addCustomerForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Customer added successfully - form will be submitted silently
+            
+            // Get form data
+            const formData = new FormData(e.target);
+            const customerData = {
+                companyName: formData.get('company_name'),
+                contactPerson: formData.get('contact_person'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                address: formData.get('address')
+            };
+            
+            // Add customer to the dashboard
+            addCustomerToList(customerData);
+            
+            // Reset form and close modal
+            e.target.reset();
             closeModal('addCustomerModal');
         });
 
         document.getElementById('editCustomerForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Customer updated successfully - form will be submitted silently
+            
+            // Get form data
+            const formData = new FormData(e.target);
+            const customerData = {
+                companyName: formData.get('company_name'),
+                contactPerson: formData.get('contact_person'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                address: formData.get('address')
+            };
+            
+            // Update customer in the dashboard (you can implement update logic here)
+            // For now, we'll just close the modal
             closeModal('editCustomerModal');
         });
 
         document.getElementById('addInstrumentForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Instrument added successfully - form will be submitted silently
+            
+            // Get form data
+            const formData = new FormData(e.target);
+            const instrumentData = {
+                instrumentName: formData.get('instrument_name'),
+                model: formData.get('model'),
+                serialNumber: formData.get('serial_number'),
+                customer: formData.get('customer_id'),
+                specifications: formData.get('specifications')
+            };
+            
+            // Add instrument to the dashboard
+            addInstrumentToList(instrumentData);
+            
+            // Reset form and close modal
+            e.target.reset();
             closeModal('addInstrumentModal');
         });
 
         document.getElementById('editInstrumentForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Instrument updated successfully - form will be submitted silently
+            
+            // Get form data
+            const formData = new FormData(e.target);
+            const instrumentData = {
+                instrumentName: formData.get('instrument_name'),
+                model: formData.get('model'),
+                serialNumber: formData.get('serial_number'),
+                customer: formData.get('customer_id'),
+                specifications: formData.get('specifications')
+            };
+            
+            // Update instrument in the dashboard (you can implement update logic here)
+            // For now, we'll just close the modal
             closeModal('editInstrumentModal');
         });
 
