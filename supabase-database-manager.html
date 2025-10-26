@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Manager - JUST INSTRUMENTS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen p-4">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="glass-effect rounded-2xl p-6 mb-6">
+                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="database" class="w-8 h-8 text-white"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-2">Database Manager</h1>
+                <p class="text-white/80">Manage Supabase Database & Active Directory Integration</p>
+                <div id="connectionStatus" class="mt-2 text-sm text-white/60"></div>
+            </div>
+        </div>
+
+        <!-- Database Operations -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Delete Operations -->
+            <div class="glass-effect rounded-xl p-6">
+                <h2 class="text-xl font-bold text-white mb-4">
+                    <i data-lucide="trash-2" class="w-5 h-5 inline mr-2"></i>
+                    Delete Database Entries
+                </h2>
+                
+                <div class="space-y-4">
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        <strong>⚠️ Warning:</strong> These operations will permanently delete data from your Supabase database.
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-3">
+                        <button onclick="deleteAllUsers()" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
+                            <i data-lucide="users" class="w-4 h-4 inline mr-2"></i>
+                            Delete All Users
+                        </button>
+                        
+                        <button onclick="deleteAllCustomers()" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
+                            <i data-lucide="building" class="w-4 h-4 inline mr-2"></i>
+                            Delete All Customers
+                        </button>
+                        
+                        <button onclick="deleteAllCertificates()" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
+                            <i data-lucide="file-text" class="w-4 h-4 inline mr-2"></i>
+                            Delete All Certificates
+                        </button>
+                        
+                        <button onclick="deleteAllInstruments()" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
+                            <i data-lucide="settings" class="w-4 h-4 inline mr-2"></i>
+                            Delete All Instruments
+                        </button>
+                        
+                        <button onclick="deleteAllData()" class="bg-red-800 text-white py-2 px-4 rounded hover:bg-red-900 transition-colors font-bold">
+                            <i data-lucide="trash" class="w-4 h-4 inline mr-2"></i>
+                            DELETE ALL DATA
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Directory Integration -->
+            <div class="glass-effect rounded-xl p-6">
+                <h2 class="text-xl font-bold text-white mb-4">
+                    <i data-lucide="shield" class="w-5 h-5 inline mr-2"></i>
+                    Active Directory Integration
+                </h2>
+                
+                <div class="space-y-4">
+                    <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded">
+                        <strong>ℹ️ Info:</strong> Configure Active Directory integration for enterprise authentication.
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">AD Server URL</label>
+                            <input type="text" id="adServerUrl" placeholder="ldap://your-domain.com:389" 
+                                   class="w-full px-3 py-2 bg-white/20 border border-white/30 rounded text-white placeholder-white/60">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Base DN</label>
+                            <input type="text" id="baseDN" placeholder="DC=company,DC=com" 
+                                   class="w-full px-3 py-2 bg-white/20 border border-white/30 rounded text-white placeholder-white/60">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Admin Username</label>
+                            <input type="text" id="adAdminUser" placeholder="admin@company.com" 
+                                   class="w-full px-3 py-2 bg-white/20 border border-white/30 rounded text-white placeholder-white/60">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Admin Password</label>
+                            <input type="password" id="adAdminPass" placeholder="Admin password" 
+                                   class="w-full px-3 py-2 bg-white/20 border border-white/30 rounded text-white placeholder-white/60">
+                        </div>
+                        
+                        <button onclick="testADConnection()" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors">
+                            <i data-lucide="test-tube" class="w-4 h-4 inline mr-2"></i>
+                            Test AD Connection
+                        </button>
+                        
+                        <button onclick="configureADIntegration()" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition-colors">
+                            <i data-lucide="settings" class="w-4 h-4 inline mr-2"></i>
+                            Configure AD Integration
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Status -->
+        <div class="glass-effect rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">
+                <i data-lucide="activity" class="w-5 h-5 inline mr-2"></i>
+                Database Status
+            </h2>
+            
+            <div id="databaseStatus" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white/10 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white/70 text-sm">Users</p>
+                            <p class="text-white text-2xl font-bold" id="userCount">-</p>
+                        </div>
+                        <i data-lucide="users" class="w-8 h-8 text-blue-400"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-white/10 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white/70 text-sm">Customers</p>
+                            <p class="text-white text-2xl font-bold" id="customerCount">-</p>
+                        </div>
+                        <i data-lucide="building" class="w-8 h-8 text-green-400"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-white/10 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white/70 text-sm">Certificates</p>
+                            <p class="text-white text-2xl font-bold" id="certificateCount">-</p>
+                        </div>
+                        <i data-lucide="file-text" class="w-8 h-8 text-purple-400"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-white/10 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white/70 text-sm">Instruments</p>
+                            <p class="text-white text-2xl font-bold" id="instrumentCount">-</p>
+                        </div>
+                        <i data-lucide="settings" class="w-8 h-8 text-yellow-400"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <button onclick="refreshDatabaseStatus()" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-2"></i>
+                    Refresh Status
+                </button>
+            </div>
+        </div>
+
+        <!-- SQL Query Interface -->
+        <div class="glass-effect rounded-xl p-6 mt-6">
+            <h2 class="text-xl font-bold text-white mb-4">
+                <i data-lucide="terminal" class="w-5 h-5 inline mr-2"></i>
+                SQL Query Interface
+            </h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-white mb-2">SQL Query</label>
+                    <textarea id="sqlQuery" rows="4" placeholder="SELECT * FROM users;" 
+                              class="w-full px-3 py-2 bg-white/20 border border-white/30 rounded text-white placeholder-white/60 font-mono text-sm"></textarea>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button onclick="executeSQL()" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition-colors">
+                        <i data-lucide="play" class="w-4 h-4 inline mr-2"></i>
+                        Execute Query
+                    </button>
+                    
+                    <button onclick="clearSQL()" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition-colors">
+                        <i data-lucide="x" class="w-4 h-4 inline mr-2"></i>
+                        Clear
+                    </button>
+                </div>
+                
+                <div id="sqlResults" class="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm max-h-64 overflow-auto hidden">
+                    <pre id="sqlOutput"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        let supabase = null;
+        let isConnected = false;
+
+        // Initialize Supabase connection
+        async function initializeSupabase() {
+            try {
+                if (!window.SUPABASE_CONFIG || !window.SUPABASE_CONFIG.url || !window.SUPABASE_CONFIG.anonKey) {
+                    throw new Error('Supabase configuration not loaded');
+                }
+
+                supabase = supabase.createClient(
+                    window.SUPABASE_CONFIG.url,
+                    window.SUPABASE_CONFIG.anonKey
+                );
+
+                // Test connection
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('count')
+                    .limit(1);
+
+                if (error) throw error;
+
+                isConnected = true;
+                document.getElementById('connectionStatus').textContent = '✅ Connected to Supabase';
+                await refreshDatabaseStatus();
+                
+            } catch (error) {
+                console.error('Supabase connection failed:', error);
+                document.getElementById('connectionStatus').textContent = '❌ Connection Failed: ' + error.message;
+                isConnected = false;
+            }
+        }
+
+        // Delete all users
+        async function deleteAllUsers() {
+            if (!isConnected) {
+                alert('Not connected to Supabase');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to delete ALL users? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('users')
+                    .delete()
+                    .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
+
+                if (error) throw error;
+
+                alert('All users deleted successfully');
+                await refreshDatabaseStatus();
+            } catch (error) {
+                alert('Error deleting users: ' + error.message);
+            }
+        }
+
+        // Delete all customers
+        async function deleteAllCustomers() {
+            if (!isConnected) {
+                alert('Not connected to Supabase');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to delete ALL customers? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('customers')
+                    .delete()
+                    .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
+
+                if (error) throw error;
+
+                alert('All customers deleted successfully');
+                await refreshDatabaseStatus();
+            } catch (error) {
+                alert('Error deleting customers: ' + error.message);
+            }
+        }
+
+        // Delete all certificates
+        async function deleteAllCertificates() {
+            if (!isConnected) {
+                alert('Not connected to Supabase');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to delete ALL certificates? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('certificates')
+                    .delete()
+                    .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
+
+                if (error) throw error;
+
+                alert('All certificates deleted successfully');
+                await refreshDatabaseStatus();
+            } catch (error) {
+                alert('Error deleting certificates: ' + error.message);
+            }
+        }
+
+        // Delete all instruments
+        async function deleteAllInstruments() {
+            if (!isConnected) {
+                alert('Not connected to Supabase');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to delete ALL instruments? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('instruments')
+                    .delete()
+                    .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
+
+                if (error) throw error;
+
+                alert('All instruments deleted successfully');
+                await refreshDatabaseStatus();
+            } catch (error) {
+                alert('Error deleting instruments: ' + error.message);
+            }
+        }
+
+        // Delete all data
+        async function deleteAllData() {
+            if (!isConnected) {
+                alert('Not connected to Supabase');
+                return;
+            }
+
+            if (!confirm('⚠️ WARNING: This will delete ALL data from your database! This action cannot be undone. Are you absolutely sure?')) {
+                return;
+            }
+
+            try {
+                // Delete in order to respect foreign key constraints
+                await supabase.from('certificates').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                await supabase.from('instruments').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                await supabase.from('customers').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                await supabase.from('users').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+
+                alert('All data deleted successfully');
+                await refreshDatabaseStatus();
+            } catch (error) {
+                alert('Error deleting data: ' + error.message);
+            }
+        }
+
+        // Test AD connection
+        async function testADConnection() {
+            const serverUrl = document.getElementById('adServerUrl').value;
+            const baseDN = document.getElementById('baseDN').value;
+            const adminUser = document.getElementById('adAdminUser').value;
+            const adminPass = document.getElementById('adAdminPass').value;
+
+            if (!serverUrl || !baseDN || !adminUser || !adminPass) {
+                alert('Please fill in all AD connection fields');
+                return;
+            }
+
+            // Simulate AD connection test
+            alert('AD Connection Test:\n\nServer: ' + serverUrl + '\nBase DN: ' + baseDN + '\nUser: ' + adminUser + '\n\nNote: This is a simulation. Real AD integration requires server-side implementation.');
+        }
+
+        // Configure AD integration
+        async function configureADIntegration() {
+            const serverUrl = document.getElementById('adServerUrl').value;
+            const baseDN = document.getElementById('baseDN').value;
+            const adminUser = document.getElementById('adAdminUser').value;
+            const adminPass = document.getElementById('adAdminPass').value;
+
+            if (!serverUrl || !baseDN || !adminUser || !adminPass) {
+                alert('Please fill in all AD connection fields');
+                return;
+            }
+
+            // Save AD configuration to localStorage
+            const adConfig = {
+                serverUrl: serverUrl,
+                baseDN: baseDN,
+                adminUser: adminUser,
+                adminPass: adminPass,
+                configured: true
+            };
+
+            localStorage.setItem('adConfig', JSON.stringify(adConfig));
+            alert('AD configuration saved successfully!');
+        }
+
+        // Refresh database status
+        async function refreshDatabaseStatus() {
+            if (!isConnected) {
+                document.getElementById('userCount').textContent = '-';
+                document.getElementById('customerCount').textContent = '-';
+                document.getElementById('certificateCount').textContent = '-';
+                document.getElementById('instrumentCount').textContent = '-';
+                return;
+            }
+
+            try {
+                const [users, customers, certificates, instruments] = await Promise.all([
+                    supabase.from('users').select('*', { count: 'exact', head: true }),
+                    supabase.from('customers').select('*', { count: 'exact', head: true }),
+                    supabase.from('certificates').select('*', { count: 'exact', head: true }),
+                    supabase.from('instruments').select('*', { count: 'exact', head: true })
+                ]);
+
+                document.getElementById('userCount').textContent = users.count || 0;
+                document.getElementById('customerCount').textContent = customers.count || 0;
+                document.getElementById('certificateCount').textContent = certificates.count || 0;
+                document.getElementById('instrumentCount').textContent = instruments.count || 0;
+
+            } catch (error) {
+                console.error('Error refreshing database status:', error);
+            }
+        }
+
+        // Execute SQL query
+        async function executeSQL() {
+            if (!isConnected) {
+                alert('Not connected to Supabase');
+                return;
+            }
+
+            const query = document.getElementById('sqlQuery').value.trim();
+            if (!query) {
+                alert('Please enter a SQL query');
+                return;
+            }
+
+            try {
+                // Note: Direct SQL execution requires RPC functions in Supabase
+                // This is a simplified example
+                alert('SQL Query Execution:\n\nQuery: ' + query + '\n\nNote: Direct SQL execution requires RPC functions to be set up in Supabase. Use the Supabase dashboard SQL editor for direct queries.');
+                
+                document.getElementById('sqlResults').classList.remove('hidden');
+                document.getElementById('sqlOutput').textContent = 'Query executed (simulation)\nResult: SQL execution requires RPC functions';
+                
+            } catch (error) {
+                alert('Error executing SQL: ' + error.message);
+            }
+        }
+
+        // Clear SQL query
+        function clearSQL() {
+            document.getElementById('sqlQuery').value = '';
+            document.getElementById('sqlResults').classList.add('hidden');
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            initializeSupabase();
+        });
+    </script>
+</body>
+</html>

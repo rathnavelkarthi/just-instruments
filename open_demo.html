@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUST INSTRUMENTS - Calibration Certificate Management Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: transform 0.2s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-gray-900">JUST INSTRUMENTS</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Admin Dashboard</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-500 rounded-full pulse-animation"></div>
+                        <span class="text-green-600 text-sm font-medium">Live Demo</span>
+                    </div>
+                    <button class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Dashboard Header -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900">Calibration Certificate Management</h2>
+            <p class="text-gray-600 mt-2">Complete digital solution for managing calibration certificates, customers, and instruments</p>
+            <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex items-center">
+                    <i data-lucide="info" class="w-5 h-5 text-blue-600 mr-2"></i>
+                    <p class="text-blue-800 text-sm">
+                        <strong>Demo Mode:</strong> This is a live demonstration of the Calibration Certificate Management Platform. 
+                        All features shown here are fully implemented in the backend system.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                        <i data-lucide="users" class="w-6 h-6"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Customers</p>
+                        <p class="text-2xl font-semibold text-gray-900">1,247</p>
+                        <p class="text-xs text-green-600">+12% this month</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                        <i data-lucide="activity" class="w-6 h-6"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Active Certificates</p>
+                        <p class="text-2xl font-semibold text-gray-900">3,456</p>
+                        <p class="text-xs text-green-600">+8% this month</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Expiring Soon</p>
+                        <p class="text-2xl font-semibold text-gray-900">89</p>
+                        <p class="text-xs text-yellow-600">Next 30 days</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-red-100 text-red-600">
+                        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Expired</p>
+                        <p class="text-2xl font-semibold text-gray-900">23</p>
+                        <p class="text-xs text-red-600">Requires attention</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="showDemo('Add Customer')" class="bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i data-lucide="plus" class="w-5 h-5 mx-auto mb-2"></i>
+                        <p class="text-sm font-medium">Add Customer</p>
+                    </button>
+                    <button onclick="showDemo('Create Certificate')" class="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition-colors">
+                        <i data-lucide="file-text" class="w-5 h-5 mx-auto mb-2"></i>
+                        <p class="text-sm font-medium">Create Certificate</p>
+                    </button>
+                    <button onclick="showDemo('Test Equipment')" class="bg-purple-600 text-white p-4 rounded-lg hover:bg-purple-700 transition-colors">
+                        <i data-lucide="settings" class="w-5 h-5 mx-auto mb-2"></i>
+                        <p class="text-sm font-medium">Test Equipment</p>
+                    </button>
+                    <button onclick="showDemo('Calibration Staff')" class="bg-orange-600 text-white p-4 rounded-lg hover:bg-orange-700 transition-colors">
+                        <i data-lucide="users" class="w-5 h-5 mx-auto mb-2"></i>
+                        <p class="text-sm font-medium">Calibration Staff</p>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <p class="text-sm text-gray-600">Certificate JIC-20241201-001 created</p>
+                        <span class="text-xs text-gray-400">2 hours ago</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <p class="text-sm text-gray-600">New customer ABC Industries added</p>
+                        <span class="text-xs text-gray-400">4 hours ago</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                        <p class="text-sm text-gray-600">Certificate JIC-20241130-045 expires in 3 days</p>
+                        <span class="text-xs text-gray-400">6 hours ago</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                        <p class="text-sm text-gray-600">Certificate JIC-20241125-012 expired</p>
+                        <span class="text-xs text-gray-400">1 day ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Certificates Table -->
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Certificates</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Certificate #</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instrument</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Calibration Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">JIC-20241201-001</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">ABC Industries</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Digital Multimeter</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-12-01</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2025-12-01</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button onclick="showDemo('View Certificate')" class="text-blue-600 hover:text-blue-900 mr-3">View</button>
+                                <button onclick="showDemo('Download PDF')" class="text-green-600 hover:text-green-900">Download</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">JIC-20241130-045</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">XYZ Corp</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Pressure Gauge</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-11-30</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-12-04</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Expiring Soon</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button onclick="showDemo('View Certificate')" class="text-blue-600 hover:text-blue-900 mr-3">View</button>
+                                <button onclick="showDemo('Download PDF')" class="text-green-600 hover:text-green-900">Download</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">JIC-20241125-012</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">DEF Ltd</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Temperature Sensor</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-11-25</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-11-30</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Expired</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button onclick="showDemo('View Certificate')" class="text-blue-600 hover:text-blue-900 mr-3">View</button>
+                                <button onclick="showDemo('Renew Certificate')" class="text-orange-600 hover:text-orange-900">Renew</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Features Overview -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center mb-4">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                        <i data-lucide="smartphone" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 ml-3">Mobile App</h3>
+                </div>
+                <p class="text-gray-600">Flutter-based mobile application for iOS and Android with OTP authentication, certificate viewing, and push notifications.</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center mb-4">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                        <i data-lucide="file-text" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 ml-3">PDF Generation</h3>
+                </div>
+                <p class="text-gray-600">Automated PDF certificate generation with QR codes, digital signatures, and branded templates.</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center mb-4">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 ml-3">Notifications</h3>
+                </div>
+                <p class="text-gray-600">Multi-channel notifications via email, SMS, WhatsApp, and push notifications for renewals and expiry alerts.</p>
+            </div>
+        </div>
+
+        <!-- Platform Status -->
+        <div class="mt-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-bold mb-2">🚀 Platform Status</h3>
+                    <p class="text-blue-100">Complete Calibration Certificate Management System</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">✅ Backend API</span>
+                        <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">✅ Database Schema</span>
+                        <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">✅ Admin Dashboard</span>
+                        <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">✅ Mobile App</span>
+                        <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">✅ PDF Generation</span>
+                        <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">✅ Notifications</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-3xl font-bold">100%</div>
+                    <div class="text-blue-100">Complete</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-lg font-semibold mb-2">JUST INSTRUMENTS Inc.</h3>
+                <p class="text-gray-400">Calibration Certificate Management Platform</p>
+                <p class="text-gray-500 text-sm mt-2">Developed by ICodeBees Private Limited</p>
+                <div class="mt-4">
+                    <button onclick="showDemo('Contact Support')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg mr-2">
+                        Contact Support
+                    </button>
+                    <button onclick="showDemo('Documentation')" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                        Documentation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Demo Modal -->
+    <div id="demoModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Demo Feature</h3>
+                <button onclick="closeDemo()" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="demoContent" class="text-gray-600">
+                <!-- Demo content will be inserted here -->
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeDemo()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Demo functionality
+        function showDemo(feature) {
+            const modal = document.getElementById('demoModal');
+            const content = document.getElementById('demoContent');
+            
+            const demos = {
+                'Add Customer': `
+                    <div class="text-center">
+                        <i data-lucide="users" class="w-12 h-12 text-blue-600 mx-auto mb-4"></i>
+                        <h4 class="text-lg font-semibold mb-2">Add Customer</h4>
+                        <p class="text-gray-600 mb-4">In the full system, this would open a form to add new customers with:</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-1">
+                            <li>• Company information</li>
+                            <li>• Contact details</li>
+                            <li>• Multiple addresses</li>
+                            <li>• GST/PAN numbers</li>
+                        </ul>
+                    </div>
+                `,
+                'Create Certificate': `
+                    <div class="text-center">
+                        <i data-lucide="file-text" class="w-12 h-12 text-green-600 mx-auto mb-4"></i>
+                        <h4 class="text-lg font-semibold mb-2">Create Certificate</h4>
+                        <p class="text-gray-600 mb-4">Automated certificate generation with:</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-1">
+                            <li>• Customer selection</li>
+                            <li>• Instrument details</li>
+                            <li>• Test equipment used</li>
+                            <li>• PDF generation with QR code</li>
+                        </ul>
+                    </div>
+                `,
+                'Test Equipment': `
+                    <div class="text-center">
+                        <i data-lucide="settings" class="w-12 h-12 text-purple-600 mx-auto mb-4"></i>
+                        <h4 class="text-lg font-semibold mb-2">Test Equipment</h4>
+                        <p class="text-gray-600 mb-4">Manage calibration equipment:</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-1">
+                            <li>• Equipment specifications</li>
+                            <li>• Calibration dates</li>
+                            <li>• Accuracy tracking</li>
+                            <li>• Renewal alerts</li>
+                        </ul>
+                    </div>
+                `,
+                'Calibration Staff': `
+                    <div class="text-center">
+                        <i data-lucide="users" class="w-12 h-12 text-orange-600 mx-auto mb-4"></i>
+                        <h4 class="text-lg font-semibold mb-2">Calibration Staff</h4>
+                        <p class="text-gray-600 mb-4">Manage staff members:</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-1">
+                            <li>• Staff information</li>
+                            <li>• Digital signatures</li>
+                            <li>• Designation tracking</li>
+                            <li>• Certificate assignment</li>
+                        </ul>
+                    </div>
+                `,
+                'View Certificate': `
+                    <div class="text-center">
+                        <i data-lucide="eye" class="w-12 h-12 text-blue-600 mx-auto mb-4"></i>
+                        <h4 class="text-lg font-semibold mb-2">View Certificate</h4>
+                        <p class="text-gray-600 mb-4">Detailed certificate view with:</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-1">
+                            <li>• Complete certificate details</li>
+                            <li>• Test results</li>
+                            <li>• Environmental conditions</li>
+                            <li>• Digital signature</li>
+                        </ul>
+                    </div>
+                `,
+                'Download PDF': `
+                    <div class="text-center">
+                        <i data-lucide="download" class="w-12 h-12 text-green-600 mx-auto mb-4"></i>
+                        <h4 class="text-lg font-semibold mb-2">Download PDF</h4>
+                        <p class="text-gray-600 mb-4">Professional PDF certificate with:</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-1">
+                            <li>• Company branding</li>
+                            <li>• QR code verification</li>
+                            <li>• Digital signature</li>
+                            <li>• Complete test data</li>
+                        </ul>
+                    </div>
+                `,
+                'Renew Certificate': `
+                    <div class="text-center">
+                        <i data-lucide="refresh-cw" class="w-12 h-12 text-orange-600 mx-auto mb-4"></i>
+                        <h4 class="text-lg font-semibold mb-2">Renew Certificate</h4>
+                        <p class="text-gray-600 mb-4">Certificate renewal process:</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-1">
+                            <li>• Schedule new calibration</li>
+                            <li>• Update test results</li>
+                            <li>• Generate new certificate</li>
+                            <li>• Send notifications</li>
+                        </ul>
+                    </div>
+                `,
+                'Contact Support': `
+                    <div class="text-center">
+                        <i data-lucide="phone" class="w-12 h-12 text-blue-600 mx-auto mb-4"></i>
+                        <h4 class="text-lg font-semibold mb-2">Contact Support</h4>
+                        <p class="text-gray-600 mb-4">Get help with the platform:</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-1">
+                            <li>• Email: support@icodebees.com</li>
+                            <li>• Website: www.icodebees.com</li>
+                            <li>• Documentation available</li>
+                            <li>• 24/7 technical support</li>
+                        </ul>
+                    </div>
+                `,
+                'Documentation': `
+                    <div class="text-center">
+                        <i data-lucide="book" class="w-12 h-12 text-gray-600 mx-auto mb-4"></i>
+                        <h4 class="text-lg font-semibold mb-2">Documentation</h4>
+                        <p class="text-gray-600 mb-4">Complete platform documentation:</p>
+                        <ul class="text-left text-sm text-gray-600 space-y-1">
+                            <li>• API documentation</li>
+                            <li>• User guides</li>
+                            <li>• Setup instructions</li>
+                            <li>• Troubleshooting guides</li>
+                        </ul>
+                    </div>
+                `
+            };
+            
+            content.innerHTML = demos[feature] || '<p>Demo feature not available</p>';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Re-initialize icons in the modal
+            lucide.createIcons();
+        }
+        
+        function closeDemo() {
+            const modal = document.getElementById('demoModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('demoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDemo();
+            }
+        });
+        
+        // Add some dynamic behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stats on load
+            const stats = document.querySelectorAll('.text-2xl');
+            stats.forEach(stat => {
+                const finalValue = stat.textContent;
+                stat.textContent = '0';
+                let current = 0;
+                const increment = parseInt(finalValue.replace(/,/g, '')) / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= parseInt(finalValue.replace(/,/g, ''))) {
+                        stat.textContent = finalValue;
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(current).toLocaleString();
+                    }
+                }, 30);
+            });
+        });
+    </script>
+</body>
+</html>

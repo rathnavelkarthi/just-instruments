@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUST INSTRUMENTS - Calibration Platform</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            margin: 10px;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        .credentials {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .credentials h3 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .credential-item:last-child {
+            border-bottom: none;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status.online {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .instructions {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">JUST INSTRUMENTS</div>
+        <div class="subtitle">Calibration Certificate Management Platform</div>
+        
+        <div class="status online">🟢 System Online</div>
+        
+        <div class="instructions">
+            <h3>🚀 Quick Start Instructions</h3>
+            <p><strong>Option 1:</strong> Click "Login Portal" below to access the platform</p>
+            <p><strong>Option 2:</strong> Open <code>login.html</code> directly in your browser</p>
+            <p><strong>Option 3:</strong> Run <code>start_local.bat</code> for automatic setup</p>
+        </div>
+        
+        <a href="login.html" class="button">🔐 Login Portal</a>
+        <a href="modern-dashboard.html" class="button">📊 Staff Dashboard</a>
+        <a href="customer-dashboard.html" class="button">👤 Customer Portal</a>
+        
+        <div class="credentials">
+            <h3>🔐 Login Credentials</h3>
+            <div class="credential-item">
+                <span><strong>Admin Login:</strong></span>
+                <span>admin@justinstruments.com / admin123</span>
+            </div>
+            <div class="credential-item">
+                <span><strong>Staff Login:</strong></span>
+                <span>staff001 / staff123</span>
+            </div>
+            <div class="credential-item">
+                <span><strong>Customer Login:</strong></span>
+                <span>CUST-001 / OTP: 123456</span>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 Features Available</h3>
+            <ul style="text-align: left; margin: 0;">
+                <li>✅ Complete Admin Dashboard</li>
+                <li>✅ Staff Dashboard</li>
+                <li>✅ Customer Portal with OTP Login</li>
+                <li>✅ Customer Certificate Management</li>
+                <li>✅ Customer Profile Management</li>
+                <li>✅ Customer Notification Preferences</li>
+                <li>✅ PDF Certificate Downloads</li>
+                <li>✅ WhatsApp & Email Integration</li>
+                <li>✅ Export & Share Options</li>
+            </ul>
+        </div>
+        
+        <div style="margin-top: 30px; color: #6b7280; font-size: 0.9rem;">
+            <p>💡 <strong>Note:</strong> For full API functionality, install Node.js and run <code>npm install && npm start</code></p>
+            <p>🌐 <strong>Local Server:</strong> Run <code>python start_simple.py</code> for HTTP server</p>
+        </div>
+    </div>
+</body>
+</html>

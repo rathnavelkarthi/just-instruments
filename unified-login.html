@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUST INSTRUMENTS - Unified Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="supabase-integration.js"></script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .input-focus {
+            transition: all 0.3s ease;
+        }
+        .input-focus:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .user-type-indicator {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .admin-indicator { background: #3b82f6; color: white; }
+        .staff-indicator { background: #10b981; color: white; }
+        .customer-indicator { background: #8b5cf6; color: white; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="glass-effect rounded-2xl p-6 mb-6">
+                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="shield-check" class="w-8 h-8 text-white"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-white mb-2">JUST INSTRUMENTS</h1>
+                <p class="text-white/80 text-sm">Unified Login Portal</p>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="glass-effect rounded-2xl p-8 shadow-2xl relative">
+            <!-- User Type Indicator -->
+            <div id="userTypeIndicator" class="user-type-indicator hidden">
+                <span id="userTypeText"></span>
+            </div>
+
+            <form id="unifiedLoginForm" class="space-y-6">
+                <!-- Username/Email Field -->
+                <div>
+                    <label class="block text-sm font-medium text-white mb-2">
+                        <i data-lucide="user" class="w-4 h-4 inline mr-2"></i>
+                        Username / Email / Customer ID
+                    </label>
+                    <input type="text" id="username" placeholder="Enter your credentials" 
+                           class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:ring-2 focus:ring-white/50 focus:border-transparent input-focus">
+                </div>
+                
+                <!-- Password Field -->
+                <div>
+                    <label class="block text-sm font-medium text-white mb-2">
+                        <i data-lucide="lock" class="w-4 h-4 inline mr-2"></i>
+                        Password / OTP
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="password" placeholder="Enter your password or OTP" 
+                               class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:ring-2 focus:ring-white/50 focus:border-transparent input-focus pr-12">
+                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white">
+                            <i data-lucide="eye" class="w-5 h-5" id="passwordToggle"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- OTP Section (Hidden by default) -->
+                <div id="otpSection" class="hidden">
+                    <label class="block text-sm font-medium text-white mb-2">
+                        <i data-lucide="smartphone" class="w-4 h-4 inline mr-2"></i>
+                        Enter OTP
+                    </label>
+                    <input type="text" id="otpCode" placeholder="Enter 6-digit OTP" maxlength="6"
+                           class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:ring-2 focus:ring-white/50 focus:border-transparent input-focus text-center text-2xl tracking-widest">
+                    <button type="button" onclick="resendOTP()" class="mt-2 text-white/70 hover:text-white text-sm">
+                        <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-1"></i>
+                        Resend OTP
+                    </button>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" id="loginButton"
+                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                    <i data-lucide="log-in" class="w-5 h-5 inline mr-2"></i>
+                    Login
+                </button>
+            </form>
+
+            <!-- Demo Credentials -->
+            <div class="mt-6 p-4 bg-white/10 rounded-lg">
+                <h3 class="text-sm font-semibold text-white mb-3">Demo Credentials:</h3>
+                <div class="space-y-3 text-xs text-white/80">
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                        <div>
+                            <span class="font-semibold">Admin:</span>
+                            <span class="ml-2">admin@justinstruments.com / admin123</span>
+                        </div>
+                        <span class="user-type-indicator admin-indicator">A</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                        <div>
+                            <span class="font-semibold">Staff:</span>
+                            <span class="ml-2">staff001 / staff123</span>
+                        </div>
+                        <span class="user-type-indicator staff-indicator">S</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                        <div>
+                            <span class="font-semibold">Customer:</span>
+                            <span class="ml-2">CUST-001 / 123456</span>
+                        </div>
+                        <span class="user-type-indicator customer-indicator">C</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Login Buttons -->
+            <div class="mt-6 grid grid-cols-3 gap-2">
+                <button onclick="quickLogin('admin@justinstruments.com', 'admin123')" 
+                        class="bg-blue-500/20 text-white py-2 px-3 rounded-lg text-xs hover:bg-blue-500/30 transition-all duration-200">
+                    <i data-lucide="shield" class="w-4 h-4 inline mr-1"></i>
+                    Admin
+                </button>
+                <button onclick="quickLogin('staff001', 'staff123')" 
+                        class="bg-green-500/20 text-white py-2 px-3 rounded-lg text-xs hover:bg-green-500/30 transition-all duration-200">
+                    <i data-lucide="users" class="w-4 h-4 inline mr-1"></i>
+                    Staff
+                </button>
+                <button onclick="quickLogin('CUST-001', '123456')" 
+                        class="bg-purple-500/20 text-white py-2 px-3 rounded-lg text-xs hover:bg-purple-500/30 transition-all duration-200">
+                    <i data-lucide="user" class="w-4 h-4 inline mr-1"></i>
+                    Customer
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center">
+            <div class="glass-effect rounded-lg p-4">
+                <p class="text-xs text-white/60">
+                    © 2025 JUST INSTRUMENTS. Unified Login Portal. Secure Authentication.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Supabase Configuration
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        
+        // Initialize Supabase client
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUserType = null;
+        let otpSent = false;
+
+        // Quick login function
+        function quickLogin(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+            document.getElementById('unifiedLoginForm').dispatchEvent(new Event('submit'));
+        }
+
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggleIcon = document.getElementById('passwordToggle');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        // Detect user type based on credentials
+        function detectUserType(username, password) {
+            // Admin detection
+            if (username.includes('@') && username.includes('admin')) {
+                return 'admin';
+            }
+            
+            // Staff detection
+            if (username.startsWith('staff') || username === 'staff001') {
+                return 'staff';
+            }
+            
+            // Customer detection
+            if (username.startsWith('CUST-') || username === 'CUST-001') {
+                return 'customer';
+            }
+            
+            return null;
+        }
+
+        // Show user type indicator
+        function showUserTypeIndicator(userType) {
+            const indicator = document.getElementById('userTypeIndicator');
+            const text = document.getElementById('userTypeText');
+            
+            indicator.classList.remove('hidden');
+            indicator.classList.remove('admin-indicator', 'staff-indicator', 'customer-indicator');
+            
+            switch(userType) {
+                case 'admin':
+                    indicator.classList.add('admin-indicator');
+                    text.textContent = 'A';
+                    break;
+                case 'staff':
+                    indicator.classList.add('staff-indicator');
+                    text.textContent = 'S';
+                    break;
+                case 'customer':
+                    indicator.classList.add('customer-indicator');
+                    text.textContent = 'C';
+                    break;
+            }
+        }
+
+        // Send OTP for customer
+        function sendOTP(customerId) {
+            console.log('Sending OTP to customer:', customerId);
+            document.getElementById('otpSection').classList.remove('hidden');
+            document.getElementById('password').placeholder = 'Enter OTP';
+            otpSent = true;
+            alert(`OTP sent to registered phone number for Customer ID: ${customerId}\n\nDemo OTP: 123456`);
+        }
+
+        // Resend OTP
+        function resendOTP() {
+            const username = document.getElementById('username').value;
+            alert('OTP resent to your registered phone number');
+        }
+
+        // Handle form submission
+        document.getElementById('unifiedLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const otpCode = document.getElementById('otpCode').value.trim();
+            
+            console.log('Login attempt - Username:', username, 'Password:', password, 'OTP:', otpCode);
+            
+            // Detect user type
+            const userType = detectUserType(username, password);
+            currentUserType = userType;
+            
+            if (userType) {
+                showUserTypeIndicator(userType);
+            }
+            
+            const button = document.getElementById('loginButton');
+            const originalText = button.innerHTML;
+            
+            // Show loading state
+            button.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 inline mr-2 animate-spin"></i>Authenticating...';
+            button.disabled = true;
+            
+            try {
+                // Use Supabase integration for authentication
+                const authResult = await window.supabaseIntegration.authenticateUser({
+                    username: username,
+                    password: password,
+                    otp: otpCode
+                });
+                
+                if (authResult.success) {
+                    // Show success animation
+                    button.innerHTML = '<i data-lucide="check" class="w-5 h-5 inline mr-2"></i>Success!';
+                    button.classList.add('bg-green-600', 'hover:bg-green-700');
+                    button.classList.remove('from-blue-600', 'to-purple-600', 'hover:from-blue-700', 'hover:to-purple-700');
+                    
+                    // Store user session
+                    localStorage.setItem('user', JSON.stringify(authResult.user));
+                    localStorage.setItem('userType', authResult.userType);
+                    
+                    // Redirect based on user type
+                    let redirectUrl = '';
+                    switch(authResult.userType) {
+                        case 'admin':
+                        case 'staff':
+                            redirectUrl = 'modern-dashboard.html';
+                            break;
+                        case 'customer':
+                            redirectUrl = 'customer-dashboard.html';
+                            break;
+                    }
+                    
+                    setTimeout(() => {
+                        window.location.href = redirectUrl;
+                    }, 1500);
+                } else {
+                    throw new Error(authResult.error || 'Authentication failed');
+                }
+            } catch (error) {
+                console.error('Authentication error:', error);
+                
+                // Show error animation
+                button.innerHTML = '<i data-lucide="x" class="w-5 h-5 inline mr-2"></i>Invalid Credentials';
+                button.classList.add('bg-red-600', 'hover:bg-red-700');
+                button.classList.remove('from-blue-600', 'to-purple-600', 'hover:from-blue-700', 'hover:to-purple-700');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    button.classList.add('from-blue-600', 'to-purple-600', 'hover:from-blue-700', 'hover:to-purple-700');
+                    button.disabled = false;
+                }, 2000);
+            }
+        });
+
+        // Auto-format OTP input
+        document.getElementById('otpCode').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 6);
+        });
+
+        // Real-time user type detection
+        document.getElementById('username').addEventListener('input', function(e) {
+            const username = e.target.value.trim();
+            const userType = detectUserType(username, '');
+            
+            if (userType) {
+                showUserTypeIndicator(userType);
+            } else {
+                document.getElementById('userTypeIndicator').classList.add('hidden');
+            }
+        });
+
+        // Add floating animation to inputs on focus
+        document.querySelectorAll('.input-focus').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUST INSTRUMENTS - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .chart-container {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .content-transition {
+            transition: margin-left 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl sidebar-transition">
+        <!-- Logo -->
+        <div class="flex items-center justify-center h-16 px-4 bg-gradient-to-r from-blue-600 to-cyan-600">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-blue-600"></i>
+                </div>
+                <span class="text-white font-bold text-lg">JUST INSTRUMENTS</span>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="mt-8 px-4">
+            <div class="space-y-2">
+                <!-- Main Menu -->
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">MAIN MENU</h3>
+                    <div class="space-y-1">
+                        <button onclick="showSection('dashboard')" class="nav-item w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 bg-green-100 text-green-700">
+                            <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                            Dashboard
+                        </button>
+                        <button onclick="showSection('customers')" class="nav-item w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                            <i data-lucide="users" class="w-5 h-5 mr-3"></i>
+                            Customers
+                        </button>
+                        <button onclick="showSection('instruments')" class="nav-item w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                            <i data-lucide="package" class="w-5 h-5 mr-3"></i>
+                            Instruments
+                        </button>
+                        <button onclick="showSection('certificates')" class="nav-item w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                            <i data-lucide="file-text" class="w-5 h-5 mr-3"></i>
+                            Certificates
+                        </button>
+                        <button onclick="showSection('testEquipment')" class="nav-item w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                            <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                            Test Equipment
+                        </button>
+                        <button onclick="showSection('calibrationStaff')" class="nav-item w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                            <i data-lucide="user-check" class="w-5 h-5 mr-3"></i>
+                            Calibration Staff
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Other -->
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">OTHER</h3>
+                    <div class="space-y-1">
+                        <button onclick="showSection('notifications')" class="nav-item w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                            <i data-lucide="bell" class="w-5 h-5 mr-3"></i>
+                            Notifications
+                        </button>
+                        <button onclick="showSection('reports')" class="nav-item w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5 mr-3"></i>
+                            Reports
+                        </button>
+                        <button onclick="showSection('analytics')" class="nav-item w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                            <i data-lucide="trending-up" class="w-5 h-5 mr-3"></i>
+                            Analytics
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Account -->
+                <div class="mb-6">
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">ACCOUNT</h3>
+                    <div class="space-y-1">
+                        <button onclick="showSection('account')" class="nav-item w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                            <i data-lucide="user" class="w-5 h-5 mr-3"></i>
+                            Account
+                        </button>
+                        <button onclick="showSection('settings')" class="nav-item w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                            <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                            Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- User Profile -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                    <span class="text-white font-semibold text-sm">JS</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">John Smith</p>
+                    <p class="text-xs text-gray-500 truncate">john@justinstruments.com</p>
+                </div>
+                <button onclick="logout()" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="content-transition ml-64">
+        <!-- Top Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleSidebar()" class="lg:hidden text-gray-600 hover:text-gray-900">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div class="flex-1 max-w-md">
+                        <div class="relative">
+                            <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-600 hover:text-gray-900">
+                        <i data-lucide="sun" class="w-5 h-5"></i>
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-900 relative">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                    </button>
+                    <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center space-x-2">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Export</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="p-6">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+                <p class="text-gray-600">Track your calibration certificates and performance metrics.</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total Certificates -->
+                <div class="stat-card rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-medium text-gray-500">Total Certificates</h3>
+                        <i data-lucide="file-text" class="w-5 h-5 text-blue-500"></i>
+                    </div>
+                    <div class="flex items-baseline">
+                        <p class="text-3xl font-bold text-gray-900">1,247</p>
+                        <p class="text-sm text-gray-500 ml-2">This Month</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600 font-medium">+12%</span>
+                        <span class="text-gray-500 ml-2">from last month</span>
+                    </div>
+                    <div class="mt-2">
+                        <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">See Details →</a>
+                    </div>
+                </div>
+
+                <!-- Active Calibrations -->
+                <div class="stat-card rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-medium text-gray-500">Active Calibrations</h3>
+                        <i data-lucide="activity" class="w-5 h-5 text-green-500"></i>
+                    </div>
+                    <div class="flex items-baseline">
+                        <p class="text-3xl font-bold text-gray-900">342</p>
+                        <p class="text-sm text-gray-500 ml-2">In Progress</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600 font-medium">+8%</span>
+                        <span class="text-gray-500 ml-2">from last month</span>
+                    </div>
+                    <div class="mt-2">
+                        <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">See Details →</a>
+                    </div>
+                </div>
+
+                <!-- Revenue -->
+                <div class="stat-card rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-medium text-gray-500">Monthly Revenue</h3>
+                        <i data-lucide="dollar-sign" class="w-5 h-5 text-purple-500"></i>
+                    </div>
+                    <div class="flex items-baseline">
+                        <p class="text-3xl font-bold text-gray-900">$43,630</p>
+                        <p class="text-sm text-gray-500 ml-2">This Month</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600 font-medium">+15%</span>
+                        <span class="text-gray-500 ml-2">from last month</span>
+                    </div>
+                    <div class="mt-2">
+                        <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">See Details →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Calibration Trends -->
+                <div class="chart-container rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Calibration Trends</h3>
+                            <p class="text-sm text-gray-500">Monthly calibration performance</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <select class="text-sm border border-gray-300 rounded-lg px-3 py-1">
+                                <option>This Year</option>
+                                <option>Last Year</option>
+                            </select>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i data-lucide="filter" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="calibrationChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="chart-container rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Performance Metrics</h3>
+                            <p class="text-sm text-gray-500">Calibration accuracy and efficiency</p>
+                        </div>
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="h-64 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="w-32 h-32 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-white font-bold text-2xl">94.2%</span>
+                            </div>
+                            <p class="text-sm text-gray-600">Overall Accuracy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Recent Certificates -->
+                <div class="chart-container rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900">Recent Certificates</h3>
+                        <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All →</a>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">JIC-20241201-001</p>
+                                <p class="text-xs text-gray-500">Digital Multimeter - ABC Industries</p>
+                            </div>
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Completed</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="clock" class="w-5 h-5 text-yellow-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">JIC-20241201-002</p>
+                                <p class="text-xs text-gray-500">Pressure Gauge - XYZ Corp</p>
+                            </div>
+                            <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">In Progress</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="file-check" class="w-5 h-5 text-purple-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">JIC-20241130-045</p>
+                                <p class="text-xs text-gray-500">Temperature Sensor - DEF Ltd</p>
+                            </div>
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Completed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Renewals -->
+                <div class="chart-container rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900">Upcoming Renewals</h3>
+                        <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All →</a>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">DM-2000</p>
+                                    <p class="text-xs text-gray-500">Expires in 3 days</p>
+                                </div>
+                            </div>
+                            <button class="text-red-600 hover:text-red-800 text-sm font-medium">Renew</button>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="clock" class="w-5 h-5 text-yellow-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">PG-100</p>
+                                    <p class="text-xs text-gray-500">Expires in 7 days</p>
+                                </div>
+                            </div>
+                            <button class="text-yellow-600 hover:text-yellow-800 text-sm font-medium">Schedule</button>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="calendar" class="w-5 h-5 text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">TS-300</p>
+                                    <p class="text-xs text-gray-500">Expires in 14 days</p>
+                                </div>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">Plan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+    <!-- Add Customer Modal -->
+    <div id="addCustomerModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Add New Customer</h3>
+                <button onclick="closeModal('addCustomerModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="addCustomerForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Company Name *</label>
+                        <input type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter company name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Contact Person *</label>
+                        <input type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter contact person name">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                        <input type="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter email address">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                        <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter phone number">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                    <textarea rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter complete address"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('addCustomerModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Add Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Details Modal -->
+    <div id="customerDetailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-4xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Customer Details</h3>
+                <button onclick="closeModal('customerDetailsModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Company Information</h4>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Company:</strong> ABC Industries</p>
+                        <p><strong>Contact:</strong> John Smith</p>
+                        <p><strong>Email:</strong> john@abcindustries.com</p>
+                        <p><strong>Phone:</strong> +1 555-0123</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Address</h4>
+                    <div class="space-y-2 text-sm">
+                        <p>123 Business Street</p>
+                        <p>Suite 100</p>
+                        <p>New York, NY 10001</p>
+                        <p>United States</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6">
+                <h4 class="font-semibold text-gray-900 mb-2">Instruments (5)</h4>
+                <div class="space-y-2 text-sm">
+                    <p>• Digital Multimeter - DM-2000</p>
+                    <p>• Pressure Gauge - PG-100</p>
+                    <p>• Temperature Sensor - TS-300</p>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button onclick="closeModal('customerDetailsModal')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Customer Modal -->
+    <div id="editCustomerModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Edit Customer</h3>
+                <button onclick="closeModal('editCustomerModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="editCustomerForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Company Name *</label>
+                        <input type="text" value="ABC Industries" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Contact Person *</label>
+                        <input type="text" value="John Smith" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('editCustomerModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Update Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Instrument Modal -->
+    <div id="addInstrumentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Add New Instrument</h3>
+                <button onclick="closeModal('addInstrumentModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="addInstrumentForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Customer *</label>
+                    <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select Customer</option>
+                        <option value="abc">ABC Industries</option>
+                        <option value="xyz">XYZ Corp</option>
+                        <option value="def">DEF Ltd</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Instrument Name *</label>
+                        <input type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter instrument name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Model Number</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter model number">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('addInstrumentModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Add Instrument</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Instrument Details Modal -->
+    <div id="instrumentDetailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-4xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Instrument Details</h3>
+                <button onclick="closeModal('instrumentDetailsModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Instrument Information</h4>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Name:</strong> Digital Multimeter</p>
+                        <p><strong>Model:</strong> DM-2000</p>
+                        <p><strong>Serial:</strong> DM2000-001</p>
+                        <p><strong>Customer:</strong> ABC Industries</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Calibration History</h4>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Last Calibration:</strong> 2024-12-01</p>
+                        <p><strong>Next Due:</strong> 2025-12-01</p>
+                        <p><strong>Status:</strong> Active</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button onclick="closeModal('instrumentDetailsModal')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Instrument Modal -->
+    <div id="editInstrumentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Edit Instrument</h3>
+                <button onclick="closeModal('editInstrumentModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="editInstrumentForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Instrument Name *</label>
+                        <input type="text" value="Digital Multimeter" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Model Number</label>
+                        <input type="text" value="DM-2000" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('editInstrumentModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Update Instrument</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Certificate Modal -->
+    <div id="createCertificateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-4xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Create Certificate</h3>
+                <button onclick="closeModal('createCertificateModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="createCertificateForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Customer *</label>
+                        <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Customer</option>
+                            <option value="abc">ABC Industries</option>
+                            <option value="xyz">XYZ Corp</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Instrument *</label>
+                        <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Instrument</option>
+                            <option value="dm">Digital Multimeter</option>
+                            <option value="pg">Pressure Gauge</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Calibration Date *</label>
+                        <input type="date" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Next Due Date *</label>
+                        <input type="date" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('createCertificateModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Create Certificate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Certificate Details Modal -->
+    <div id="certificateDetailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-4xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Certificate Details</h3>
+                <button onclick="closeModal('certificateDetailsModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Certificate Information</h4>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Certificate No:</strong> JIC-20241201-001</p>
+                        <p><strong>Customer:</strong> ABC Industries</p>
+                        <p><strong>Instrument:</strong> Digital Multimeter</p>
+                        <p><strong>Issue Date:</strong> 2024-12-01</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Calibration Details</h4>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Calibrated By:</strong> John Smith</p>
+                        <p><strong>Next Due:</strong> 2025-12-01</p>
+                        <p><strong>Status:</strong> Valid</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button onclick="closeModal('certificateDetailsModal')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Certificate Modal -->
+    <div id="editCertificateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Edit Certificate</h3>
+                <button onclick="closeModal('editCertificateModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="editCertificateForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Certificate Number</label>
+                        <input type="text" value="JIC-20241201-001" readonly class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="valid">Valid</option>
+                            <option value="expired">Expired</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('editCertificateModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Update Certificate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Test Equipment Modal -->
+    <div id="addTestEquipmentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Add Test Equipment</h3>
+                <button onclick="closeModal('addTestEquipmentModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="addTestEquipmentForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Equipment Name *</label>
+                        <input type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter equipment name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Model Number</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter model number">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('addTestEquipmentModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Add Equipment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Test Equipment Details Modal -->
+    <div id="testEquipmentDetailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-4xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Test Equipment Details</h3>
+                <button onclick="closeModal('testEquipmentDetailsModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Equipment Information</h4>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Name:</strong> Digital Calibrator</p>
+                        <p><strong>Model:</strong> DC-5000</p>
+                        <p><strong>Serial:</strong> DC5000-001</p>
+                        <p><strong>Accuracy:</strong> ±0.01%</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Calibration Status</h4>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Last Calibration:</strong> 2024-11-15</p>
+                        <p><strong>Next Due:</strong> 2025-11-15</p>
+                        <p><strong>Status:</strong> <span class="text-green-600 font-medium">Valid</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button onclick="closeModal('testEquipmentDetailsModal')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Test Equipment Modal -->
+    <div id="editTestEquipmentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Edit Test Equipment</h3>
+                <button onclick="closeModal('editTestEquipmentModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="editTestEquipmentForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Equipment Name *</label>
+                        <input type="text" value="Digital Calibrator" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Model Number</label>
+                        <input type="text" value="DC-5000" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('editTestEquipmentModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Update Equipment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Staff Modal -->
+    <div id="addStaffModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Add Calibration Staff</h3>
+                <button onclick="closeModal('addStaffModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="addStaffForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Staff Name *</label>
+                        <input type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter staff name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Designation *</label>
+                        <input type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter designation">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('addStaffModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Add Staff</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Staff Details Modal -->
+    <div id="staffDetailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-4xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Staff Details</h3>
+                <button onclick="closeModal('staffDetailsModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Staff Information</h4>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Name:</strong> John Smith</p>
+                        <p><strong>Designation:</strong> Senior Calibration Engineer</p>
+                        <p><strong>Certificates:</strong> 156</p>
+                        <p><strong>Signature Status:</strong> <span class="text-green-600 font-medium">Available</span></p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Recent Activity</h4>
+                    <div class="space-y-2 text-sm">
+                        <p>• JIC-20241201-001 - Digital Multimeter</p>
+                        <p>• JIC-20241130-045 - Pressure Gauge</p>
+                        <p>• JIC-20241128-023 - Temperature Sensor</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button onclick="closeModal('staffDetailsModal')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Staff Modal -->
+    <div id="editStaffModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Edit Staff Member</h3>
+                <button onclick="closeModal('editStaffModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="editStaffForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Staff Name *</label>
+                        <input type="text" value="John Smith" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Designation *</label>
+                        <input type="text" value="Senior Calibration Engineer" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('editStaffModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Update Staff</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Signature Modal -->
+    <div id="uploadSignatureModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Upload Digital Signature</h3>
+                <button onclick="closeModal('uploadSignatureModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="uploadSignatureForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Staff Member</label>
+                    <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="john">John Smith - Senior Calibration Engineer</option>
+                        <option value="sarah">Sarah Johnson - Calibration Technician</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Digital Signature</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <i data-lucide="upload" class="w-8 h-8 text-gray-400 mx-auto mb-2"></i>
+                        <p class="text-sm text-gray-600 mb-2">Upload signature image (PNG, JPG, GIF)</p>
+                        <input type="file" accept="image/*" class="hidden" id="signatureUpload">
+                        <button type="button" onclick="document.getElementById('signatureUpload').click()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                            Choose File
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('uploadSignatureModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Upload Signature</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Send Notification Modal -->
+    <div id="sendNotificationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Send Notification</h3>
+                <button onclick="closeModal('sendNotificationModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="sendNotificationForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Notification Type *</label>
+                    <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select Type</option>
+                        <option value="renewal">Renewal Reminder</option>
+                        <option value="expiry">Expiry Alert</option>
+                        <option value="certificate">Certificate Ready</option>
+                        <option value="custom">Custom Message</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Recipients *</label>
+                    <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select Recipients</option>
+                        <option value="all">All Customers</option>
+                        <option value="specific">Specific Customers</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                    <textarea rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter notification message"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('sendNotificationModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Send Notification</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Export Options Modal -->
+    <div id="exportOptionsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Export & Share Report</h3>
+                <button onclick="closeModal('exportOptionsModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="exportOptionsForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
+                    <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="certificate">Certificate Report</option>
+                        <option value="expiry">Expiry Report</option>
+                        <option value="customer">Customer Report</option>
+                        <option value="performance">Performance Report</option>
+                        <option value="revenue">Revenue Report</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Export Format</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="format" value="pdf" class="mr-2">
+                            <i data-lucide="file-pdf" class="w-4 h-4 mr-2 text-red-600"></i>
+                            <span class="text-sm">PDF</span>
+                        </label>
+                        <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="format" value="excel" class="mr-2">
+                            <i data-lucide="file-spreadsheet" class="w-4 h-4 mr-2 text-green-600"></i>
+                            <span class="text-sm">Excel</span>
+                        </label>
+                        <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="format" value="csv" class="mr-2">
+                            <i data-lucide="file-text" class="w-4 h-4 mr-2 text-blue-600"></i>
+                            <span class="text-sm">CSV</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Share Options</label>
+                    <div class="space-y-3">
+                        <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="checkbox" name="shareOptions" value="email" class="mr-3">
+                            <i data-lucide="mail" class="w-5 h-5 mr-3 text-blue-600"></i>
+                            <div>
+                                <p class="font-medium text-gray-900">Send via Email</p>
+                                <p class="text-sm text-gray-500">Email report to recipients</p>
+                            </div>
+                        </label>
+                        <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="checkbox" name="shareOptions" value="whatsapp" class="mr-3">
+                            <i data-lucide="message-circle" class="w-5 h-5 mr-3 text-green-600"></i>
+                            <div>
+                                <p class="font-medium text-gray-900">Send via WhatsApp</p>
+                                <p class="text-sm text-gray-500">Share report via WhatsApp</p>
+                            </div>
+                        </label>
+                        <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="checkbox" name="shareOptions" value="download" class="mr-3">
+                            <i data-lucide="download" class="w-5 h-5 mr-3 text-purple-600"></i>
+                            <div>
+                                <p class="font-medium text-gray-900">Download File</p>
+                                <p class="text-sm text-gray-500">Download report to device</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div id="emailRecipients" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email Recipients</label>
+                    <textarea rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter email addresses separated by commas"></textarea>
+                </div>
+                <div id="whatsappRecipients" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">WhatsApp Recipients</label>
+                    <textarea rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter phone numbers with country code (e.g., +1234567890)"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('exportOptionsModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Export & Share</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Report Filters Modal -->
+    <div id="reportFiltersModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Report Filters</h3>
+                <button onclick="closeModal('reportFiltersModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="reportFiltersForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="quarter">This Quarter</option>
+                            <option value="year">This Year</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="all">All Reports</option>
+                            <option value="certificate">Certificate Reports</option>
+                            <option value="expiry">Expiry Reports</option>
+                            <option value="customer">Customer Reports</option>
+                            <option value="performance">Performance Reports</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Customer</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="all">All Customers</option>
+                            <option value="abc">ABC Industries</option>
+                            <option value="xyz">XYZ Corp</option>
+                            <option value="def">DEF Ltd</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="expired">Expired</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('reportFiltersModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Schedule Report Modal -->
+    <div id="scheduleReportModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl mx-4 max-h-96 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Schedule Report</h3>
+                <button onclick="closeModal('scheduleReportModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="scheduleReportForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
+                    <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="certificate">Certificate Report</option>
+                        <option value="expiry">Expiry Report</option>
+                        <option value="customer">Customer Report</option>
+                        <option value="performance">Performance Report</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Frequency</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="quarterly">Quarterly</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                        <input type="time" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Recipients</label>
+                    <textarea rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter email addresses separated by commas"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('scheduleReportModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Schedule Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Toggle sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const mainContent = document.getElementById('mainContent');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+            mainContent.classList.toggle('ml-0');
+        }
+
+        // Navigation
+        function showSection(section) {
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('bg-green-100', 'text-green-700');
+                item.classList.add('text-gray-700', 'hover:bg-gray-100');
+            });
+            event.target.closest('.nav-item').classList.add('bg-green-100', 'text-green-700');
+            event.target.closest('.nav-item').classList.remove('text-gray-700', 'hover:bg-gray-100');
+            
+            // Show appropriate section content
+            const mainContent = document.querySelector('main');
+            
+            if (section === 'dashboard') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+                        <p class="text-gray-600">Track your calibration certificates and performance metrics.</p>
+                    </div>
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="stat-card rounded-xl p-6 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-sm font-medium text-gray-500">Total Certificates</h3>
+                                <i data-lucide="file-text" class="w-5 h-5 text-blue-500"></i>
+                            </div>
+                            <div class="flex items-baseline">
+                                <p class="text-3xl font-bold text-gray-900">1,247</p>
+                                <p class="text-sm text-gray-500 ml-2">This Month</p>
+                            </div>
+                            <div class="mt-4 flex items-center text-sm">
+                                <span class="text-green-600 font-medium">+12%</span>
+                                <span class="text-gray-500 ml-2">from last month</span>
+                            </div>
+                        </div>
+                        <div class="stat-card rounded-xl p-6 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-sm font-medium text-gray-500">Active Calibrations</h3>
+                                <i data-lucide="activity" class="w-5 h-5 text-green-500"></i>
+                            </div>
+                            <div class="flex items-baseline">
+                                <p class="text-3xl font-bold text-gray-900">342</p>
+                                <p class="text-sm text-gray-500 ml-2">In Progress</p>
+                            </div>
+                            <div class="mt-4 flex items-center text-sm">
+                                <span class="text-green-600 font-medium">+8%</span>
+                                <span class="text-gray-500 ml-2">from last month</span>
+                            </div>
+                        </div>
+                        <div class="stat-card rounded-xl p-6 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-sm font-medium text-gray-500">Monthly Revenue</h3>
+                                <i data-lucide="dollar-sign" class="w-5 h-5 text-purple-500"></i>
+                            </div>
+                            <div class="flex items-baseline">
+                                <p class="text-3xl font-bold text-gray-900">$43,630</p>
+                                <p class="text-sm text-gray-500 ml-2">This Month</p>
+                            </div>
+                            <div class="mt-4 flex items-center text-sm">
+                                <span class="text-green-600 font-medium">+15%</span>
+                                <span class="text-gray-500 ml-2">from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'customers') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2">Customers</h1>
+                                <p class="text-gray-600">Manage customer information and relationships.</p>
+                            </div>
+                            <button onclick="showAddCustomer()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>Add Customer</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <h3 class="font-semibold text-gray-900">ABC Industries</h3>
+                                    <p class="text-sm text-gray-600">john@abcindustries.com</p>
+                                    <p class="text-sm text-gray-500">+1 555-0123</p>
+                                    <div class="mt-3 flex space-x-2">
+                                        <button onclick="showCustomerDetails('ABC Industries')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        <button onclick="editCustomer('ABC Industries')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                                        <button onclick="deleteCustomer('ABC Industries')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                    </div>
+                                </div>
+                                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <h3 class="font-semibold text-gray-900">XYZ Corp</h3>
+                                    <p class="text-sm text-gray-600">contact@xyzcorp.com</p>
+                                    <p class="text-sm text-gray-500">+1 555-0456</p>
+                                    <div class="mt-3 flex space-x-2">
+                                        <button onclick="showCustomerDetails('XYZ Corp')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        <button onclick="editCustomer('XYZ Corp')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                                        <button onclick="deleteCustomer('XYZ Corp')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                    </div>
+                                </div>
+                                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <h3 class="font-semibold text-gray-900">DEF Ltd</h3>
+                                    <p class="text-sm text-gray-600">info@defltd.com</p>
+                                    <p class="text-sm text-gray-500">+1 555-0789</p>
+                                    <div class="mt-3 flex space-x-2">
+                                        <button onclick="showCustomerDetails('DEF Ltd')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        <button onclick="editCustomer('DEF Ltd')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                                        <button onclick="deleteCustomer('DEF Ltd')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'instruments') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2">Instruments</h1>
+                                <p class="text-gray-600">Manage calibration instruments and equipment.</p>
+                            </div>
+                            <button onclick="showAddInstrument()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>Add Instrument</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <h3 class="font-semibold text-gray-900">Digital Multimeter</h3>
+                                    <p class="text-sm text-gray-600">Model: DM-2000</p>
+                                    <p class="text-sm text-gray-500">Customer: ABC Industries</p>
+                                    <div class="mt-3 flex space-x-2">
+                                        <button onclick="showInstrumentDetails('Digital Multimeter')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        <button onclick="editInstrument('Digital Multimeter')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                                        <button onclick="deleteInstrument('Digital Multimeter')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                    </div>
+                                </div>
+                                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <h3 class="font-semibold text-gray-900">Pressure Gauge</h3>
+                                    <p class="text-sm text-gray-600">Model: PG-100</p>
+                                    <p class="text-sm text-gray-500">Customer: XYZ Corp</p>
+                                    <div class="mt-3 flex space-x-2">
+                                        <button onclick="showInstrumentDetails('Pressure Gauge')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        <button onclick="editInstrument('Pressure Gauge')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                                        <button onclick="deleteInstrument('Pressure Gauge')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'certificates') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2">Certificates</h1>
+                                <p class="text-gray-600">Create and manage calibration certificates.</p>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button onclick="showExportOptions()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center space-x-2">
+                                    <i data-lucide="download" class="w-4 h-4"></i>
+                                    <span>Export</span>
+                                </button>
+                                <button onclick="showCreateCertificate()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                    <span>Create Certificate</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <i data-lucide="file-check" class="w-6 h-6 text-green-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold text-gray-900">JIC-20241201-001</h3>
+                                            <p class="text-sm text-gray-600">Digital Multimeter - ABC Industries</p>
+                                            <p class="text-sm text-gray-500">Issued: 2024-12-01 • Expires: 2025-12-01</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Valid</span>
+                                        <div class="flex space-x-1">
+                                            <button onclick="viewCertificate('JIC-20241201-001')" class="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50">View</button>
+                                            <button onclick="editCertificate('JIC-20241201-001')" class="text-green-600 hover:text-green-800 text-sm px-2 py-1 rounded hover:bg-green-50">Edit</button>
+                                            <button onclick="generateCertificatePDF('JIC-20241201-001')" class="text-indigo-600 hover:text-indigo-800 text-sm px-2 py-1 rounded hover:bg-indigo-50">PDF</button>
+                                            <button onclick="shareCertificate('JIC-20241201-001')" class="text-purple-600 hover:text-purple-800 text-sm px-2 py-1 rounded hover:bg-purple-50">Share</button>
+                                            <button onclick="reissueCertificate('JIC-20241201-001')" class="text-orange-600 hover:text-orange-800 text-sm px-2 py-1 rounded hover:bg-orange-50">Reissue</button>
+                                            <button onclick="deleteCertificate('JIC-20241201-001')" class="text-red-600 hover:text-red-800 text-sm px-2 py-1 rounded hover:bg-red-50">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                            <i data-lucide="alert-triangle" class="w-6 h-6 text-yellow-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold text-gray-900">JIC-20241130-045</h3>
+                                            <p class="text-sm text-gray-600">Pressure Gauge - XYZ Corp</p>
+                                            <p class="text-sm text-gray-500">Issued: 2024-11-30 • Expires: 2025-01-15</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Expiring Soon</span>
+                                        <div class="flex space-x-1">
+                                            <button onclick="viewCertificate('JIC-20241130-045')" class="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50">View</button>
+                                            <button onclick="editCertificate('JIC-20241130-045')" class="text-green-600 hover:text-green-800 text-sm px-2 py-1 rounded hover:bg-green-50">Edit</button>
+                                            <button onclick="generateCertificatePDF('JIC-20241130-045')" class="text-indigo-600 hover:text-indigo-800 text-sm px-2 py-1 rounded hover:bg-indigo-50">PDF</button>
+                                            <button onclick="shareCertificate('JIC-20241130-045')" class="text-purple-600 hover:text-purple-800 text-sm px-2 py-1 rounded hover:bg-purple-50">Share</button>
+                                            <button onclick="reissueCertificate('JIC-20241130-045')" class="text-orange-600 hover:text-orange-800 text-sm px-2 py-1 rounded hover:bg-orange-50">Reissue</button>
+                                            <button onclick="deleteCertificate('JIC-20241130-045')" class="text-red-600 hover:text-red-800 text-sm px-2 py-1 rounded hover:bg-red-50">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                            <i data-lucide="x-circle" class="w-6 h-6 text-red-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold text-gray-900">JIC-20241128-023</h3>
+                                            <p class="text-sm text-gray-600">Temperature Sensor - DEF Ltd</p>
+                                            <p class="text-sm text-gray-500">Issued: 2024-11-28 • Expired: 2024-12-01</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">Expired</span>
+                                        <div class="flex space-x-1">
+                                            <button onclick="viewCertificate('JIC-20241128-023')" class="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50">View</button>
+                                            <button onclick="editCertificate('JIC-20241128-023')" class="text-green-600 hover:text-green-800 text-sm px-2 py-1 rounded hover:bg-green-50">Edit</button>
+                                            <button onclick="generateCertificatePDF('JIC-20241128-023')" class="text-indigo-600 hover:text-indigo-800 text-sm px-2 py-1 rounded hover:bg-indigo-50">PDF</button>
+                                            <button onclick="shareCertificate('JIC-20241128-023')" class="text-purple-600 hover:text-purple-800 text-sm px-2 py-1 rounded hover:bg-purple-50">Share</button>
+                                            <button onclick="reissueCertificate('JIC-20241128-023')" class="text-orange-600 hover:text-orange-800 text-sm px-2 py-1 rounded hover:bg-orange-50">Reissue</button>
+                                            <button onclick="deleteCertificate('JIC-20241128-023')" class="text-red-600 hover:text-red-800 text-sm px-2 py-1 rounded hover:bg-red-50">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'testEquipment') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2">Test Equipment</h1>
+                                <p class="text-gray-600">Manage calibration test equipment and standards.</p>
+                            </div>
+                            <button onclick="showAddTestEquipment()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>Add Equipment</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <h3 class="font-semibold text-gray-900">Digital Calibrator</h3>
+                                    <p class="text-sm text-gray-600">Model: DC-5000</p>
+                                    <p class="text-sm text-gray-500">Accuracy: ±0.01%</p>
+                                    <div class="mt-3 flex space-x-2">
+                                        <button onclick="showTestEquipmentDetails('Digital Calibrator')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        <button onclick="editTestEquipment('Digital Calibrator')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                                        <button onclick="deleteTestEquipment('Digital Calibrator')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                    </div>
+                                </div>
+                                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <h3 class="font-semibold text-gray-900">Pressure Standard</h3>
+                                    <p class="text-sm text-gray-600">Model: PS-1000</p>
+                                    <p class="text-sm text-gray-500">Accuracy: ±0.005%</p>
+                                    <div class="mt-3 flex space-x-2">
+                                        <button onclick="showTestEquipmentDetails('Pressure Standard')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        <button onclick="editTestEquipment('Pressure Standard')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                                        <button onclick="deleteTestEquipment('Pressure Standard')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'calibrationStaff') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2">Calibration Staff</h1>
+                                <p class="text-gray-600">Manage calibration staff and their digital signatures.</p>
+                            </div>
+                            <button onclick="showAddStaff()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>Add Staff</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <h3 class="font-semibold text-gray-900">John Smith</h3>
+                                    <p class="text-sm text-gray-600">Senior Calibration Engineer</p>
+                                    <p class="text-sm text-gray-500">Certificates: 156</p>
+                                    <div class="mt-3 flex space-x-2">
+                                        <button onclick="showStaffDetails('John Smith')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        <button onclick="editStaff('John Smith')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                                        <button onclick="uploadSignature('John Smith')" class="text-purple-600 hover:text-purple-800 text-sm">Signature</button>
+                                        <button onclick="deleteStaff('John Smith')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                    </div>
+                                </div>
+                                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                    <h3 class="font-semibold text-gray-900">Sarah Johnson</h3>
+                                    <p class="text-sm text-gray-600">Calibration Technician</p>
+                                    <p class="text-sm text-gray-500">Certificates: 89</p>
+                                    <div class="mt-3 flex space-x-2">
+                                        <button onclick="showStaffDetails('Sarah Johnson')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                                        <button onclick="editStaff('Sarah Johnson')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                                        <button onclick="uploadSignature('Sarah Johnson')" class="text-purple-600 hover:text-purple-800 text-sm">Signature</button>
+                                        <button onclick="deleteStaff('Sarah Johnson')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'notifications') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2">Notifications</h1>
+                                <p class="text-gray-600">Manage and send notifications to customers.</p>
+                            </div>
+                            <button onclick="showSendNotification()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>Send Notification</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">Recent Notifications</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">Certificate Ready</p>
+                                        <p class="text-xs text-gray-500">ABC Industries - 2 hours ago</p>
+                                    </div>
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Sent</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">Renewal Reminder</p>
+                                        <p class="text-xs text-gray-500">XYZ Corp - 1 day ago</p>
+                                    </div>
+                                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Pending</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                            <div class="space-y-3">
+                                <button onclick="createRenewalReminders()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
+                                    Create Renewal Reminders
+                                </button>
+                                <button onclick="createExpiryAlerts()" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm">
+                                    Create Expiry Alerts
+                                </button>
+                                <button onclick="sendBulkNotifications()" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm">
+                                    Send Bulk Notifications
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'reports') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2">Reports & Analytics</h1>
+                                <p class="text-gray-600">Generate comprehensive reports and view analytics.</p>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button onclick="showReportFilters()" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 flex items-center space-x-2">
+                                    <i data-lucide="filter" class="w-4 h-4"></i>
+                                    <span>Filters</span>
+                                </button>
+                                <button onclick="scheduleReport()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center space-x-2">
+                                    <i data-lucide="clock" class="w-4 h-4"></i>
+                                    <span>Schedule</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Report Statistics -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Total Reports</p>
+                                    <p class="text-2xl font-bold text-gray-900">47</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="file-text" class="w-6 h-6 text-blue-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">This Month</p>
+                                    <p class="text-2xl font-bold text-gray-900">12</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="trending-up" class="w-6 h-6 text-green-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Exported</p>
+                                    <p class="text-2xl font-bold text-gray-900">156</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="download" class="w-6 h-6 text-purple-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Scheduled</p>
+                                    <p class="text-2xl font-bold text-gray-900">8</p>
+                                </div>
+                                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="clock" class="w-6 h-6 text-orange-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Report Generation -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">Certificate Reports</h3>
+                            <div class="space-y-3">
+                                <button onclick="generateCertificateReport()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm flex items-center justify-center space-x-2">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                                    <span>Generate Certificate Report</span>
+                                </button>
+                                <button onclick="generateExpiryReport()" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm flex items-center justify-center space-x-2">
+                                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                    <span>Expiry Report</span>
+                                </button>
+                                <button onclick="generateCustomerReport()" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm flex items-center justify-center space-x-2">
+                                    <i data-lucide="users" class="w-4 h-4"></i>
+                                    <span>Customer Report</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">Analytics Reports</h3>
+                            <div class="space-y-3">
+                                <button onclick="viewAnalytics()" class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm flex items-center justify-center space-x-2">
+                                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                                    <span>View Analytics</span>
+                                </button>
+                                <button onclick="generatePerformanceReport()" class="w-full bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 text-sm flex items-center justify-center space-x-2">
+                                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                                    <span>Performance Report</span>
+                                </button>
+                                <button onclick="generateRevenueReport()" class="w-full bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 text-sm flex items-center justify-center space-x-2">
+                                    <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+                                    <span>Revenue Report</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">Export & Share</h3>
+                            <div class="space-y-3">
+                                <button onclick="showExportOptions()" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm flex items-center justify-center space-x-2">
+                                    <i data-lucide="file-pdf" class="w-4 h-4"></i>
+                                    <span>Export to PDF</span>
+                                </button>
+                                <button onclick="showExportOptions()" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm flex items-center justify-center space-x-2">
+                                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                                    <span>Export to Excel</span>
+                                </button>
+                                <button onclick="showExportOptions()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm flex items-center justify-center space-x-2">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                                    <span>Export to CSV</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Reports -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">Recent Reports</h3>
+                            <button onclick="viewAllReports()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All</button>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">Certificate Report - December 2024</h4>
+                                        <p class="text-sm text-gray-500">Generated 2 hours ago • 1,247 certificates</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="shareReport('Certificate Report - December 2024')" class="text-blue-600 hover:text-blue-800 text-sm">Share</button>
+                                    <button onclick="downloadReport('Certificate Report - December 2024')" class="text-green-600 hover:text-green-800 text-sm">Download</button>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                        <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">Expiry Report - January 2025</h4>
+                                        <p class="text-sm text-gray-500">Generated 1 day ago • 23 expiring certificates</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="shareReport('Expiry Report - January 2025')" class="text-blue-600 hover:text-blue-800 text-sm">Share</button>
+                                    <button onclick="downloadReport('Expiry Report - January 2025')" class="text-green-600 hover:text-green-800 text-sm">Download</button>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i data-lucide="users" class="w-5 h-5 text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">Customer Report - Q4 2024</h4>
+                                        <p class="text-sm text-gray-500">Generated 3 days ago • 247 customers</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="shareReport('Customer Report - Q4 2024')" class="text-blue-600 hover:text-blue-800 text-sm">Share</button>
+                                    <button onclick="downloadReport('Customer Report - Q4 2024')" class="text-green-600 hover:text-green-800 text-sm">Download</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'analytics') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Analytics Dashboard</h1>
+                        <p class="text-gray-600">Comprehensive analytics and performance metrics.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">Performance Metrics</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Calibration Accuracy</span>
+                                    <span class="text-sm font-semibold text-green-600">94.2%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">On-Time Delivery</span>
+                                    <span class="text-sm font-semibold text-blue-600">87.5%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Customer Satisfaction</span>
+                                    <span class="text-sm font-semibold text-purple-600">4.8/5</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">Revenue Analytics</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Monthly Revenue</span>
+                                    <span class="text-sm font-semibold text-green-600">$43,630</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Growth Rate</span>
+                                    <span class="text-sm font-semibold text-blue-600">+15.2%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Active Customers</span>
+                                    <span class="text-sm font-semibold text-purple-600">247</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'account') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Account Settings</h1>
+                        <p class="text-gray-600">Manage your account information and preferences.</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-4">Profile Information</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                                        <input type="text" value="John Smith" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                        <input type="email" value="john@justinstruments.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                                        <input type="tel" value="+1 555-0123" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-4">Security</h3>
+                                <div class="space-y-4">
+                                    <button onclick="changePassword()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
+                                        Change Password
+                                    </button>
+                                    <button onclick="enableTwoFactor()" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm">
+                                        Enable 2FA
+                                    </button>
+                                    <button onclick="viewLoginHistory()" class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm">
+                                        Login History
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'settings') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">System Settings</h1>
+                        <p class="text-gray-600">Configure system preferences and settings.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">General Settings</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Email Notifications</span>
+                                    <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded">
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">SMS Notifications</span>
+                                    <input type="checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded">
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">WhatsApp Notifications</span>
+                                    <input type="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-semibold text-gray-900 mb-4">Certificate Settings</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Default Validity Period (Days)</label>
+                                    <input type="number" value="365" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Reminder Days Before Expiry</label>
+                                    <input type="number" value="30" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">${section.charAt(0).toUpperCase() + section.slice(1)}</h1>
+                        <p class="text-gray-600">Manage ${section} information and settings.</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <p class="text-gray-500">This section is under development. Coming soon!</p>
+                    </div>
+                `;
+            }
+            
+            // Reinitialize icons
+            lucide.createIcons();
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'modern-login.html';
+            }
+        }
+
+        // Customer functions
+        function showAddCustomer() {
+            showModal('addCustomerModal');
+        }
+
+        function showCustomerDetails(customer) {
+            showModal('customerDetailsModal');
+        }
+
+        function editCustomer(customer) {
+            showModal('editCustomerModal');
+        }
+
+        function deleteCustomer(customer) {
+            if (confirm(`Are you sure you want to delete ${customer}?`)) {
+                alert(`${customer} deleted successfully`);
+            }
+        }
+
+        // Instrument functions
+        function showAddInstrument() {
+            showModal('addInstrumentModal');
+        }
+
+        function showInstrumentDetails(instrument) {
+            showModal('instrumentDetailsModal');
+        }
+
+        function editInstrument(instrument) {
+            showModal('editInstrumentModal');
+        }
+
+        function deleteInstrument(instrument) {
+            if (confirm(`Are you sure you want to delete ${instrument}?`)) {
+                alert(`${instrument} deleted successfully`);
+            }
+        }
+
+        // Certificate functions
+        function showCreateCertificate() {
+            showModal('createCertificateModal');
+        }
+
+        function viewCertificate(certificate) {
+            showModal('certificateDetailsModal');
+        }
+
+        function editCertificate(certificate) {
+            showModal('editCertificateModal');
+        }
+
+        function reissueCertificate(certificate) {
+            if (confirm(`Are you sure you want to reissue ${certificate}?`)) {
+                alert(`Certificate ${certificate} reissued successfully\n\n• New certificate number generated\n• Updated calibration date\n• New QR code\n• Notification sent to customer`);
+            }
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+            document.getElementById(modalId).classList.add('flex');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.getElementById(modalId).classList.remove('flex');
+        }
+
+        // Initialize charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Calibration Trends Chart
+            const ctx = document.getElementById('calibrationChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                    datasets: [{
+                        label: 'Certificates Issued',
+                        data: [65, 78, 90, 85, 95, 88, 92, 98],
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Calibrations Completed',
+                        data: [60, 75, 85, 80, 90, 85, 88, 95],
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // Close sidebar overlay when clicked
+        document.getElementById('sidebarOverlay').addEventListener('click', function() {
+            toggleSidebar();
+        });
+
+        // Form submission handlers
+        document.getElementById('addCustomerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Customer Added Successfully!\n\n• Customer information saved\n• Address details recorded\n• Contact information updated\n• Added to customer database');
+            closeModal('addCustomerModal');
+        });
+
+        document.getElementById('editCustomerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Customer Updated Successfully!\n\n• Customer information updated\n• Contact details modified\n• Address information changed\n• Database updated');
+            closeModal('editCustomerModal');
+        });
+
+        document.getElementById('addInstrumentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Instrument Added Successfully!\n\n• Instrument details saved\n• Customer assignment completed\n• Specifications recorded\n• Added to instrument database');
+            closeModal('addInstrumentModal');
+        });
+
+        document.getElementById('editInstrumentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Instrument Updated Successfully!\n\n• Instrument details modified\n• Specifications updated\n• Customer assignment changed\n• Database updated');
+            closeModal('editInstrumentModal');
+        });
+
+        document.getElementById('createCertificateForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Certificate Created Successfully!\n\n• Certificate number: JIC-20241201-XXX\n• PDF generated with QR code\n• Email sent to customer\n• WhatsApp notification sent\n• Added to certificate database');
+            closeModal('createCertificateModal');
+        });
+
+        document.getElementById('editCertificateForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Certificate Updated Successfully!\n\n• Certificate details modified\n• Status updated\n• Database updated\n• Changes saved');
+            closeModal('editCertificateModal');
+        });
+
+        // Test Equipment functions
+        function showAddTestEquipment() {
+            showModal('addTestEquipmentModal');
+        }
+
+        function showTestEquipmentDetails(equipment) {
+            showModal('testEquipmentDetailsModal');
+        }
+
+        function editTestEquipment(equipment) {
+            showModal('editTestEquipmentModal');
+        }
+
+        function deleteTestEquipment(equipment) {
+            if (confirm(`Are you sure you want to delete ${equipment}?`)) {
+                alert(`${equipment} deleted successfully`);
+            }
+        }
+
+        // Staff functions
+        function showAddStaff() {
+            showModal('addStaffModal');
+        }
+
+        function showStaffDetails(staff) {
+            showModal('staffDetailsModal');
+        }
+
+        function editStaff(staff) {
+            showModal('editStaffModal');
+        }
+
+        function uploadSignature(staff) {
+            showModal('uploadSignatureModal');
+        }
+
+        function deleteStaff(staff) {
+            if (confirm(`Are you sure you want to delete ${staff}?`)) {
+                alert(`${staff} deleted successfully`);
+            }
+        }
+
+        // Notification functions
+        function showSendNotification() {
+            showModal('sendNotificationModal');
+        }
+
+        function createRenewalReminders() {
+            alert('Renewal Reminders Created!\n\n• Scanning certificates expiring in 30 days\n• Generating email notifications\n• Creating SMS alerts\n• Scheduling WhatsApp messages');
+        }
+
+        function createExpiryAlerts() {
+            alert('Expiry Alerts Created!\n\n• Identifying expired certificates\n• Generating urgent notifications\n• Creating follow-up tasks\n• Sending alerts to customers');
+        }
+
+        function sendBulkNotifications() {
+            alert('Bulk Notifications Sent!\n\n• Multi-channel delivery initiated\n• Email notifications sent\n• SMS alerts delivered\n• WhatsApp messages sent');
+        }
+
+        // Report functions
+        function generateCertificateReport() {
+            alert('Certificate Report Generated!\n\n• Complete certificate data\n• Export options available\n• PDF/Excel/CSV formats\n• Report saved to downloads');
+        }
+
+        function generateExpiryReport() {
+            alert('Expiry Report Generated!\n\n• Certificates expiring soon\n• Expired certificates list\n• Renewal recommendations\n• Export options available');
+        }
+
+        function generateCustomerReport() {
+            alert('Customer Report Generated!\n\n• Customer information summary\n• Certificate history\n• Contact details\n• Export options available');
+        }
+
+        function viewAnalytics() {
+            alert('Analytics Dashboard Opened!\n\n• Performance metrics\n• Revenue analytics\n• Customer insights\n• Trend analysis');
+        }
+
+        function generatePerformanceReport() {
+            alert('Performance Report Generated!\n\n• Calibration accuracy metrics\n• On-time delivery rates\n• Customer satisfaction scores\n• Export options available');
+        }
+
+        function generateRevenueReport() {
+            alert('Revenue Report Generated!\n\n• Monthly revenue breakdown\n• Growth rate analysis\n• Customer revenue contribution\n• Export options available');
+        }
+
+        function exportToPDF() {
+            generateReportPDF();
+        }
+
+        function exportToExcel() {
+            // Create Excel-like CSV file
+            const csvContent = "Certificate Number,Customer,Instrument,Status,Issue Date,Expiry Date\n" +
+                             "JIC-20241201-001,ABC Industries,Digital Multimeter,Valid,2024-12-01,2025-12-01\n" +
+                             "JIC-20241130-045,XYZ Corp,Pressure Gauge,Expiring,2024-11-30,2025-01-15\n" +
+                             "JIC-20241128-023,DEF Ltd,Temperature Sensor,Expired,2024-11-28,2024-12-01";
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'calibration-data-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            alert('Excel Export Completed!\n\n• Data exported to CSV format\n• File downloaded successfully\n• Compatible with Excel\n• File saved to downloads');
+        }
+
+        function exportToCSV() {
+            // Create CSV file
+            const csvContent = "Certificate Number,Customer,Instrument,Status,Issue Date,Expiry Date\n" +
+                             "JIC-20241201-001,ABC Industries,Digital Multimeter,Valid,2024-12-01,2025-12-01\n" +
+                             "JIC-20241130-045,XYZ Corp,Pressure Gauge,Expiring,2024-11-30,2025-01-15\n" +
+                             "JIC-20241128-023,DEF Ltd,Temperature Sensor,Expired,2024-11-28,2024-12-01";
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'calibration-data-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            alert('CSV Export Completed!\n\n• Data exported to CSV format\n• File downloaded successfully\n• Compatible with Excel and other tools\n• File saved to downloads');
+        }
+
+        // Account functions
+        function changePassword() {
+            alert('Change Password Form:\n\n• Current password verification\n• New password requirements\n• Password confirmation\n• Security update');
+        }
+
+        function enableTwoFactor() {
+            alert('Two-Factor Authentication Setup:\n\n• QR code generation\n• Mobile app setup\n• Backup codes provided\n• Security enhanced');
+        }
+
+        function viewLoginHistory() {
+            alert('Login History:\n\n• Recent login attempts\n• IP addresses\n• Device information\n• Security monitoring');
+        }
+
+        // Certificate functions
+        function deleteCertificate(certificate) {
+            if (confirm(`Are you sure you want to delete ${certificate}?\n\nThis action cannot be undone.`)) {
+                alert(`${certificate} deleted successfully!\n\n• Certificate removed from database\n• Associated files deleted\n• Audit log updated\n• Notification sent to stakeholders`);
+            }
+        }
+
+        function shareCertificate(certificate) {
+            showModal('exportOptionsModal');
+        }
+
+        function reissueCertificate(certificate) {
+            if (confirm(`Reissue ${certificate}?\n\nThis will create a new certificate with updated dates.`)) {
+                alert(`${certificate} reissued successfully!\n\n• New certificate number generated\n• Updated expiry date set\n• PDF regenerated with new signature\n• Email notification sent to customer\n• WhatsApp notification sent`);
+            }
+        }
+
+        // PDF Generation Functions
+        function generatePDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Add title
+                doc.setFontSize(20);
+                doc.text('JUST INSTRUMENTS', 105, 20, { align: 'center' });
+                doc.setFontSize(16);
+                doc.text('CALIBRATION CERTIFICATE', 105, 30, { align: 'center' });
+                
+                // Add certificate details
+                doc.setFontSize(12);
+                doc.text('Certificate Number: JIC-20241201-001', 20, 50);
+                doc.text('Customer: ABC Industries', 20, 60);
+                doc.text('Instrument: Digital Multimeter', 20, 70);
+                doc.text('Model: DM-5000', 20, 80);
+                doc.text('Serial Number: DM5000-001', 20, 90);
+                doc.text('Calibration Date: 2024-12-01', 20, 100);
+                doc.text('Expiry Date: 2025-12-01', 20, 110);
+                doc.text('Calibrated By: John Smith', 20, 120);
+                doc.text('Accuracy: ±0.01%', 20, 130);
+                
+                // Add QR code
+                const qrCodeData = 'https://justinstruments.com/verify/JIC-20241201-001';
+                const qrCodeSize = 50;
+                const qrCodeX = 150;
+                const qrCodeY = 50;
+                
+                // Generate QR code
+                QRCode.toCanvas(document.createElement('canvas'), qrCodeData, {
+                    width: qrCodeSize,
+                    height: qrCodeSize
+                }, function (error, canvas) {
+                    if (!error) {
+                        const imgData = canvas.toDataURL('image/png');
+                        doc.addImage(imgData, 'PNG', qrCodeX, qrCodeY, qrCodeSize, qrCodeSize);
+                    }
+                });
+                
+                // Add signature line
+                doc.text('Digital Signature:', 20, 150);
+                doc.line(20, 155, 100, 155);
+                doc.text('John Smith', 20, 160);
+                doc.text('Senior Calibration Engineer', 20, 165);
+                
+                // Add footer
+                doc.setFontSize(10);
+                doc.text('This certificate is valid for 12 months from the calibration date.', 20, 180);
+                doc.text('For verification, visit: https://justinstruments.com/verify', 20, 185);
+                doc.text('© 2025 JUST INSTRUMENTS. All rights reserved.', 20, 190);
+                
+                // Save the PDF
+                doc.save('calibration-certificate-JIC-20241201-001.pdf');
+                
+                alert('PDF Certificate Generated Successfully!\n\n• Certificate created with QR code\n• Digital signature included\n• Download started automatically\n• File saved to downloads folder');
+                
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                alert('PDF generation failed. Please try again or contact support.');
+            }
+        }
+
+        function generateCertificatePDF(certificateNumber) {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Certificate template
+                doc.setFontSize(24);
+                doc.text('JUST INSTRUMENTS', 105, 25, { align: 'center' });
+                doc.setFontSize(18);
+                doc.text('CALIBRATION CERTIFICATE', 105, 35, { align: 'center' });
+                
+                // Certificate details
+                doc.setFontSize(14);
+                doc.text(`Certificate Number: ${certificateNumber}`, 20, 55);
+                doc.text('Customer: ABC Industries', 20, 65);
+                doc.text('Instrument: Digital Multimeter', 20, 75);
+                doc.text('Model: DM-5000', 20, 85);
+                doc.text('Serial Number: DM5000-001', 20, 95);
+                doc.text('Calibration Date: 2024-12-01', 20, 105);
+                doc.text('Expiry Date: 2025-12-01', 20, 115);
+                doc.text('Calibrated By: John Smith', 20, 125);
+                doc.text('Accuracy: ±0.01%', 20, 135);
+                
+                // Add QR code placeholder
+                doc.setFontSize(10);
+                doc.text('QR Code for Verification', 150, 55);
+                doc.rect(150, 60, 40, 40);
+                doc.text('QR Code', 160, 80, { align: 'center' });
+                
+                // Add signature
+                doc.text('Digital Signature:', 20, 155);
+                doc.line(20, 160, 100, 160);
+                doc.text('John Smith', 20, 165);
+                doc.text('Senior Calibration Engineer', 20, 170);
+                
+                // Footer
+                doc.setFontSize(8);
+                doc.text('This certificate is valid for 12 months from the calibration date.', 20, 185);
+                doc.text('For verification, visit: https://justinstruments.com/verify', 20, 190);
+                doc.text('© 2025 JUST INSTRUMENTS. All rights reserved.', 20, 195);
+                
+                // Save PDF
+                doc.save(`calibration-certificate-${certificateNumber}.pdf`);
+                
+                alert(`Certificate PDF Generated!\n\n• Certificate: ${certificateNumber}\n• PDF created successfully\n• Download started\n• File saved to downloads`);
+                
+            } catch (error) {
+                console.error('Certificate PDF error:', error);
+                alert('Certificate PDF generation failed. Please try again.');
+            }
+        }
+
+        function generateReportPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Report header
+                doc.setFontSize(20);
+                doc.text('JUST INSTRUMENTS', 105, 20, { align: 'center' });
+                doc.setFontSize(16);
+                doc.text('CALIBRATION REPORT', 105, 30, { align: 'center' });
+                doc.setFontSize(12);
+                doc.text('Generated on: ' + new Date().toLocaleDateString(), 105, 40, { align: 'center' });
+                
+                // Report data
+                doc.setFontSize(14);
+                doc.text('SUMMARY STATISTICS', 20, 60);
+                
+                doc.setFontSize(12);
+                doc.text('Total Certificates: 1,247', 20, 75);
+                doc.text('Valid Certificates: 1,156', 20, 85);
+                doc.text('Expiring Certificates: 23', 20, 95);
+                doc.text('Expired Certificates: 68', 20, 105);
+                doc.text('Total Customers: 247', 20, 115);
+                doc.text('Total Instruments: 189', 20, 125);
+                doc.text('Monthly Revenue: $43,630', 20, 135);
+                doc.text('Growth Rate: 15.2%', 20, 145);
+                
+                // Recent activity
+                doc.text('RECENT ACTIVITY', 20, 165);
+                doc.text('• Certificate JIC-20241201-001 created', 20, 175);
+                doc.text('• New customer ABC Industries added', 20, 185);
+                doc.text('• Digital Multimeter calibrated', 20, 195);
+                
+                // Save PDF
+                doc.save('calibration-report-' + new Date().toISOString().split('T')[0] + '.pdf');
+                
+                alert('Report PDF Generated!\n\n• Complete calibration report\n• Statistics and data included\n• Download started\n• File saved to downloads');
+                
+            } catch (error) {
+                console.error('Report PDF error:', error);
+                alert('Report PDF generation failed. Please try again.');
+            }
+        }
+
+        // Additional form submission handlers
+        document.getElementById('addTestEquipmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Test Equipment Added Successfully!\n\n• Equipment details saved\n• Calibration information recorded\n• Accuracy specifications updated\n• Added to equipment database');
+            closeModal('addTestEquipmentModal');
+        });
+
+        document.getElementById('editTestEquipmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Test Equipment Updated Successfully!\n\n• Equipment details modified\n• Calibration information updated\n• Specifications changed\n• Database updated');
+            closeModal('editTestEquipmentModal');
+        });
+
+        document.getElementById('addStaffForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Staff Member Added Successfully!\n\n• Staff information saved\n• Designation recorded\n• Added to staff database\n• Ready for signature upload');
+            closeModal('addStaffModal');
+        });
+
+        document.getElementById('editStaffForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Staff Member Updated Successfully!\n\n• Staff information modified\n• Designation updated\n• Database updated\n• Changes saved');
+            closeModal('editStaffModal');
+        });
+
+        document.getElementById('uploadSignatureForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Signature Uploaded Successfully!\n\n• Digital signature uploaded\n• Signature verified\n• Staff profile updated\n• Available for certificate generation');
+            closeModal('uploadSignatureModal');
+        });
+
+        document.getElementById('sendNotificationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Notification Sent Successfully!\n\n• Multi-channel delivery initiated\n• Email notification sent\n• SMS alert delivered\n• WhatsApp message sent\n• Push notification triggered');
+            closeModal('sendNotificationModal');
+        });
+
+        // Enhanced Reports Functions
+        function showExportOptions() {
+            showModal('exportOptionsModal');
+        }
+
+        function showReportFilters() {
+            showModal('reportFiltersModal');
+        }
+
+        function scheduleReport() {
+            showModal('scheduleReportModal');
+        }
+
+        function shareReport(reportName) {
+            showModal('exportOptionsModal');
+        }
+
+        function downloadReport(reportName) {
+            alert(`Downloading ${reportName}...\n\n• Report generated\n• File prepared\n• Download started\n• File saved to downloads`);
+        }
+
+        function viewAllReports() {
+            alert('Viewing All Reports...\n\n• Loading report history\n• Filtering options available\n• Export options ready\n• Share functionality enabled');
+        }
+
+        // Export Options Form Handler
+        document.getElementById('exportOptionsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const format = formData.get('format');
+            const shareOptions = formData.getAll('shareOptions');
+            
+            let message = `Report Export & Share Successful!\n\n• Format: ${format.toUpperCase()}\n• Report generated\n`;
+            
+            if (shareOptions.includes('email')) {
+                message += '• Email sent to recipients\n';
+            }
+            if (shareOptions.includes('whatsapp')) {
+                message += '• WhatsApp message sent\n';
+            }
+            if (shareOptions.includes('download')) {
+                message += '• File downloaded\n';
+            }
+            
+            alert(message);
+            closeModal('exportOptionsModal');
+        });
+
+        // Report Filters Form Handler
+        document.getElementById('reportFiltersForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Filters Applied Successfully!\n\n• Date range filtered\n• Report type selected\n• Customer filter applied\n• Status filter applied\n• Reports updated');
+            closeModal('reportFiltersModal');
+        });
+
+        // Schedule Report Form Handler
+        document.getElementById('scheduleReportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Report Scheduled Successfully!\n\n• Report type scheduled\n• Frequency set\n• Time configured\n• Recipients added\n• Automated delivery enabled');
+            closeModal('scheduleReportModal');
+        });
+
+        // Dynamic form handling for export options
+        document.addEventListener('change', function(e) {
+            if (e.target.name === 'shareOptions') {
+                const emailRecipients = document.getElementById('emailRecipients');
+                const whatsappRecipients = document.getElementById('whatsappRecipients');
+                
+                if (e.target.value === 'email' && e.target.checked) {
+                    emailRecipients.classList.remove('hidden');
+                } else if (e.target.value === 'email' && !e.target.checked) {
+                    emailRecipients.classList.add('hidden');
+                }
+                
+                if (e.target.value === 'whatsapp' && e.target.checked) {
+                    whatsappRecipients.classList.remove('hidden');
+                } else if (e.target.value === 'whatsapp' && !e.target.checked) {
+                    whatsappRecipients.classList.add('hidden');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
