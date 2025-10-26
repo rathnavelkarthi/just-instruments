@@ -14,7 +14,45 @@
 
 # Redirect rules
 [[redirects]]
-  # Redirect root to login page
+  # Redirect old login pages to new unified login
+  from = "/modern-login.html"
+  to = "/login.html"
+  status = 301
+
+[[redirects]]
+  from = "/unified-login.html"
+  to = "/login.html"
+  status = 301
+
+[[redirects]]
+  from = "/customer-login.html"
+  to = "/login.html"
+  status = 301
+
+[[redirects]]
+  from = "/admin-dashboard.html"
+  to = "/modern-dashboard.html"
+  status = 301
+
+[[redirects]]
+  from = "/staff-dashboard.html"
+  to = "/modern-dashboard.html"
+  status = 301
+
+[[redirects]]
+  # API routes to Netlify functions
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirects]]
+  # Catch-all for SPA routing
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  # Root redirect to login
   from = "/"
   to = "/login.html"
   status = 200
