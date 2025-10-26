@@ -1,6 +1,16 @@
 // Netlify serverless function for Supabase operations
 const { createClient } = require('@supabase/supabase-js');
 
+// Initialize Supabase client
+const supabaseUrl = process.env.SUPABASE_URL || 'https://tomvzmhaarpfmiccldly.supabase.co';
+const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error('Missing Supabase configuration');
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 exports.handler = async (event, context) => {
   // Set CORS headers
   const headers = {
@@ -19,15 +29,10 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Initialize Supabase client
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_ANON_KEY;
-    
+    // Check if Supabase is properly configured
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Supabase configuration missing');
+      throw new Error('Supabase configuration missing. Please set SUPABASE_URL and SUPABASE_ANON_KEY environment variables.');
     }
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
 
     const { operation, table, data, filters } = JSON.parse(event.body);
 

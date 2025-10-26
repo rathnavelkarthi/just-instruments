@@ -2051,6 +2051,14 @@
             const customersList = document.querySelector('#customersList .grid');
             if (!customersList) return;
             
+            // Handle both Supabase format and local format
+            const companyName = customerData.company_name || customerData.companyName;
+            const contactPerson = customerData.contact_person || customerData.contactPerson;
+            const email = customerData.email;
+            const phone = customerData.phone;
+            const address = customerData.address;
+            const customerId = customerData.customer_id || customerData.id;
+            
             // Create new customer card
             const customerCard = document.createElement('div');
             customerCard.className = 'bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow';
@@ -2061,8 +2069,8 @@
                             <i data-lucide="building" class="w-5 h-5 text-blue-600"></i>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-gray-900">${customerData.companyName}</h3>
-                            <p class="text-sm text-gray-500">${customerData.contactPerson}</p>
+                            <h3 class="font-semibold text-gray-900">${companyName}</h3>
+                            <p class="text-sm text-gray-500">${contactPerson}</p>
                         </div>
                     </div>
                     <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
@@ -2070,21 +2078,21 @@
                 <div class="space-y-2 text-sm text-gray-600">
                     <p class="flex items-center">
                         <i data-lucide="mail" class="w-4 h-4 mr-2"></i>
-                        ${customerData.email}
+                        ${email}
                     </p>
                     <p class="flex items-center">
                         <i data-lucide="phone" class="w-4 h-4 mr-2"></i>
-                        ${customerData.phone}
+                        ${phone}
                     </p>
                     <p class="flex items-center">
                         <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>
-                        ${customerData.address}
+                        ${address}
                     </p>
                 </div>
                 <div class="mt-4 flex space-x-2">
-                    <button onclick="showCustomerDetails('${customerData.companyName}')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
-                    <button onclick="editCustomer('${customerData.companyName}')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
-                    <button onclick="deleteCustomer('${customerData.companyName}')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                    <button onclick="showCustomerDetails('${companyName}')" class="text-blue-600 hover:text-blue-800 text-sm">View</button>
+                    <button onclick="editCustomer('${companyName}')" class="text-green-600 hover:text-green-800 text-sm">Edit</button>
+                    <button onclick="deleteCustomer('${companyName}')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
                 </div>
             `;
             
@@ -2167,14 +2175,14 @@
         });
 
         // Form submission handlers
-        document.getElementById('addCustomerForm').addEventListener('submit', function(e) {
+        document.getElementById('addCustomerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             // Get form data using direct element access (more reliable)
             const customerData = {
-                companyName: e.target.querySelector('input[name="company_name"]')?.value || 
+                company_name: e.target.querySelector('input[name="company_name"]')?.value || 
                             e.target.querySelector('input[placeholder*="company"]')?.value || 'New Company',
-                contactPerson: e.target.querySelector('input[name="contact_person"]')?.value || 
+                contact_person: e.target.querySelector('input[name="contact_person"]')?.value || 
                               e.target.querySelector('input[placeholder*="contact"]')?.value || 'Contact Person',
                 email: e.target.querySelector('input[name="email"]')?.value || 
                        e.target.querySelector('input[type="email"]')?.value || 'email@example.com',
@@ -2186,8 +2194,34 @@
             
             console.log('Customer data:', customerData); // Debug log
             
-            // Add customer to the dashboard
-            addCustomerToList(customerData);
+            try {
+                // Send data to Supabase via Netlify function
+                const response = await fetch('/.netlify/functions/customers', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        method: 'POST',
+                        data: customerData
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Add customer to the dashboard
+                    addCustomerToList(result.data);
+                } else {
+                    console.error('Failed to add customer:', result.error);
+                    // Still add to dashboard for demo purposes
+                    addCustomerToList(customerData);
+                }
+            } catch (error) {
+                console.error('Error adding customer:', error);
+                // Fallback: add to dashboard locally
+                addCustomerToList(customerData);
+            }
             
             // Reset form and close modal
             e.target.reset();
