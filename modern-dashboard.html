@@ -535,8 +535,22 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Model Number</label>
-                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter model number">
+                        <input type="text" name="model" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter model number">
                     </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Serial Number</label>
+                        <input type="text" name="serial_number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter serial number">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Manufacturer</label>
+                        <input type="text" name="manufacturer" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter manufacturer">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Specifications</label>
+                    <textarea name="specifications" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter specifications"></textarea>
                 </div>
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeModal('addInstrumentModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
@@ -2028,6 +2042,10 @@
                         ${instrumentData.customer}
                     </p>
                     <p class="flex items-center">
+                        <i data-lucide="factory" class="w-4 h-4 mr-2"></i>
+                        ${instrumentData.manufacturer || 'Manufacturer'}
+                    </p>
+                    <p class="flex items-center">
                         <i data-lucide="settings" class="w-4 h-4 mr-2"></i>
                         ${instrumentData.specifications || 'Standard specifications'}
                     </p>
@@ -2175,53 +2193,33 @@
         });
 
         // Form submission handlers
-        document.getElementById('addCustomerForm').addEventListener('submit', async function(e) {
+        document.getElementById('addCustomerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Get form data using direct element access (more reliable)
+            console.log('Form submitted!'); // Debug log
+            
+            // Get form data using direct element access
+            const companyName = e.target.querySelector('input[name="company_name"]')?.value;
+            const contactPerson = e.target.querySelector('input[name="contact_person"]')?.value;
+            const email = e.target.querySelector('input[name="email"]')?.value;
+            const phone = e.target.querySelector('input[name="phone"]')?.value;
+            const address = e.target.querySelector('textarea[name="address"]')?.value;
+            
+            console.log('Form values:', { companyName, contactPerson, email, phone, address }); // Debug log
+            
+            // Create customer data object
             const customerData = {
-                company_name: e.target.querySelector('input[name="company_name"]')?.value || 
-                            e.target.querySelector('input[placeholder*="company"]')?.value || 'New Company',
-                contact_person: e.target.querySelector('input[name="contact_person"]')?.value || 
-                              e.target.querySelector('input[placeholder*="contact"]')?.value || 'Contact Person',
-                email: e.target.querySelector('input[name="email"]')?.value || 
-                       e.target.querySelector('input[type="email"]')?.value || 'email@example.com',
-                phone: e.target.querySelector('input[name="phone"]')?.value || 
-                       e.target.querySelector('input[type="tel"]')?.value || 'Phone Number',
-                address: e.target.querySelector('textarea[name="address"]')?.value || 
-                         e.target.querySelector('textarea')?.value || 'Address'
+                company_name: companyName || 'New Company',
+                contact_person: contactPerson || 'Contact Person',
+                email: email || 'email@example.com',
+                phone: phone || 'Phone Number',
+                address: address || 'Address'
             };
             
             console.log('Customer data:', customerData); // Debug log
             
-            try {
-                // Send data to Supabase via Netlify function
-                const response = await fetch('/.netlify/functions/customers', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        method: 'POST',
-                        data: customerData
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Add customer to the dashboard
-                    addCustomerToList(result.data);
-                } else {
-                    console.error('Failed to add customer:', result.error);
-                    // Still add to dashboard for demo purposes
-                    addCustomerToList(customerData);
-                }
-            } catch (error) {
-                console.error('Error adding customer:', error);
-                // Fallback: add to dashboard locally
-                addCustomerToList(customerData);
-            }
+            // Add customer to the dashboard (local for now)
+            addCustomerToList(customerData);
             
             // Reset form and close modal
             e.target.reset();
@@ -2249,18 +2247,26 @@
         document.getElementById('addInstrumentForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Get form data using direct element access (more reliable)
+            console.log('Instrument form submitted!'); // Debug log
+            
+            // Get form data using direct element access
+            const instrumentName = e.target.querySelector('input[name="instrument_name"]')?.value;
+            const model = e.target.querySelector('input[name="model"]')?.value;
+            const serialNumber = e.target.querySelector('input[name="serial_number"]')?.value;
+            const manufacturer = e.target.querySelector('input[name="manufacturer"]')?.value;
+            const customer = e.target.querySelector('select[name="customer_id"]')?.value;
+            const specifications = e.target.querySelector('textarea[name="specifications"]')?.value;
+            
+            console.log('Instrument form values:', { instrumentName, model, serialNumber, manufacturer, customer, specifications }); // Debug log
+            
+            // Create instrument data object
             const instrumentData = {
-                instrumentName: e.target.querySelector('input[name="instrument_name"]')?.value || 
-                               e.target.querySelector('input[placeholder*="instrument"]')?.value || 'New Instrument',
-                model: e.target.querySelector('input[name="model"]')?.value || 
-                       e.target.querySelector('input[placeholder*="model"]')?.value || 'Model',
-                serialNumber: e.target.querySelector('input[name="serial_number"]')?.value || 
-                             e.target.querySelector('input[placeholder*="serial"]')?.value || 'SN-001',
-                customer: e.target.querySelector('select[name="customer_id"]')?.value || 
-                         e.target.querySelector('select')?.value || 'Customer',
-                specifications: e.target.querySelector('textarea[name="specifications"]')?.value || 
-                              e.target.querySelector('textarea')?.value || 'Standard specs'
+                instrumentName: instrumentName || 'New Instrument',
+                model: model || 'Model',
+                serialNumber: serialNumber || 'SN-001',
+                manufacturer: manufacturer || 'Manufacturer',
+                customer: customer || 'Customer',
+                specifications: specifications || 'Standard specs'
             };
             
             console.log('Instrument data:', instrumentData); // Debug log
