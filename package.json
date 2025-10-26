@@ -39,7 +39,10 @@
     "express-validator": "^7.0.1",
     "compression": "^1.7.4",
     "morgan": "^1.10.0",
-    "@supabase/supabase-js": "^2.38.4"
+    "@supabase/supabase-js": "^2.38.4",
+    "pg": "^8.11.3",
+    "drizzle-orm": "^0.29.0",
+    "drizzle-kit": "^0.20.4"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",
